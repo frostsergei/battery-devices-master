@@ -8,7 +8,7 @@ public class PingController : ControllerBase
 {
     [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<string> Ping()
+    public ActionResult Ping()
     {
         return Ok();
     }

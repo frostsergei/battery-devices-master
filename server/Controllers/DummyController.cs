@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+namespace Controllers;
 
-namespace server.Controllers
+[ApiController]
+[Route("ping")]
+public class DummyController : ControllerBase
 {
-    [ApiController]
-    [Route("ping")]
-    public class DummyController : ControllerBase
+    [HttpGet("")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<string> Ping()
     {
-        [HttpGet("")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<string> Ping()
-        {
-            return new JsonResult("Hello World!");
-        }
+        return new JsonResult("Hello World!");
     }
 }
+

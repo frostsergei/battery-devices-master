@@ -1,66 +1,43 @@
 using NSwag;
 
-public class Program
-{
-    public static void Main(string[] args)
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddOpenApiDocument(options =>
+    options.PostProcess = document =>
     {
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddControllers();
-
-        builder.Services.AddOpenApiDocument(options =>
+        document.Info = new OpenApiInfo()
         {
-            options.PostProcess = document =>
+            Title = "Battery devices master",
+            Version = "v1",
+            Description = "API for battery devices master.",
+            Contact = new OpenApiContact()
             {
-                document.Info = new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "Dummy API",
-                    Description = "Wow. Such api. Many endpoints. Very cool.",
-                    TermsOfService = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Example Contact",
-                        Url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Example License",
-                        Url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"
-                    }
-                };
-            };
-        });
+                Name = "Sergey Morozov",
+                Url = "https://github.com/frostsergei",
+            },
+        };
+    });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(corsBuilder =>
+    {
+        corsBuilder
+            .WithOrigins(builder.Configuration["ClientUrl"] ?? "*")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
-        // Add CORS support
-        builder.Services.AddCors(opt =>
-        {
-            opt.AddPolicy("CorsPolicy", policy =>
-            {
-                policy.AllowAnyHeader();
-                // For Angular development
-                policy.AllowAnyMethod().WithOrigins("http://localhost:4200");
-            });
-        });
+var app = builder.Build();
 
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            // Add OpenAPI 3.0 document serving middleware
-            // Available at: http://localhost:<port>/swagger/v1/swagger.json
-            app.UseOpenApi();
-            // Add web UIs to interact with the document
-            // Available at: http://localhost:<port>/swagger
-            app.UseSwaggerUi();
-        }
-
-        app.UseStaticFiles();
-        app.UseCors("CorsPolicy");
-
-        app.MapControllers();
-        app.Run();
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
+
+app.MapControllers();
+app.Map("/", context => Task.Run(() => context.Response.Redirect("/swagger")));
+
+app.Run();

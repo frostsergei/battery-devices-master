@@ -7,7 +7,4 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>/Users/purposeless/projects/battery-devices-master/client/dist/client/</BuildOutputFolder>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="src\assets\" />
-  </ItemGroup>
 </Project>

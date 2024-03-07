@@ -21,7 +21,10 @@
   ],
   "rules": {
     "prettier/prettier": [
-      "error", {"singleQuote": true}
+      "error",
+      {
+        "singleQuote": true
+      }
     ],
     "import/newline-after-import": "error",
     "import/order": [

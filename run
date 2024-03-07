@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# npm start --prefix ./client
+dotnet run --project server -lp https

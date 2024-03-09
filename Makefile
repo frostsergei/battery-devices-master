@@ -9,8 +9,11 @@ fix_api_formatting: generate_api
 generate_api: dotnet_restore
 		nswag run apigen.nswag
 
-dotnet_restore:
+dotnet_restore: install_nswag
 		dotnet restore
+
+install_nswag:
+		npm install nswag -g
 
 clean:
 		rm -rf client/src/build server/Build

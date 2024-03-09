@@ -7,4 +7,4 @@
 3. Build project.
   `make`
 4. Run application.
-  `./run`
+  `./run` (Unix) or `dotnet run --project server -lp https`

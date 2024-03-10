@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { EchoBody, EchoClient } from '~/client';
+import { EchoBody, EchoClient, ErrorResponse } from '~/client';
 
 @Component({
   selector: 'app-root',
@@ -22,11 +22,11 @@ export class AppComponent {
     this.echoClient
       .echo(new EchoBody({ message: this.requestMessage }))
       .subscribe({
-        next: (value) => {
+        next: (value: EchoBody) => {
           console.log(`response: ${value.message}`);
           this.responseMessage = value.message;
         },
-        error: (err) => {
+        error: (err: ErrorResponse) => {
           console.log(`error: ${err.message}`);
           this.responseMessage = `Error: ${err.message}`;
         },

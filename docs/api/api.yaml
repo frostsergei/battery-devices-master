@@ -48,23 +48,23 @@ components:
   schemas:
     EchoBody:
       type: object
-      description: "Echo request/response body"
+      description: "Echo request/response body\n            "
       additionalProperties: false
       required:
       - message
       properties:
         message:
           type: string
-          description: "Echo message"
+          description: "Echo message\n            "
           minLength: 1
     ErrorResponse:
       type: object
-      description: "Error response with message"
+      description: "Error response with message\n            "
       additionalProperties: false
       required:
       - message
       properties:
         message:
           type: string
-          description: "Error message"
+          description: "Error message\n            "
           minLength: 1

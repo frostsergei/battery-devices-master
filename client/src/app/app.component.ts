@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { EchoBody, EchoClient, ErrorResponse } from '~/client';
+import { EchoBody, EchoClient } from '~/client';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +10,8 @@ import { EchoBody, EchoClient, ErrorResponse } from '~/client';
 export class AppComponent {
   public requestMessage: string = '';
   public responseMessage: string = '';
+
+  public yamlText: string = '';
 
   constructor(private readonly echoClient: EchoClient) {}
 
@@ -22,14 +24,18 @@ export class AppComponent {
     this.echoClient
       .echo(new EchoBody({ message: this.requestMessage }))
       .subscribe({
-        next: (value: EchoBody) => {
+        next: (value) => {
           console.log(`response: ${value.message}`);
           this.responseMessage = value.message;
         },
-        error: (err: ErrorResponse) => {
+        error: (err) => {
           console.log(`error: ${err.message}`);
           this.responseMessage = `Error: ${err.message}`;
         },
       });
+  }
+  onRecieveValidYAMLText(newText: string): void {
+    this.yamlText = newText;
+    console.log(this.yamlText);
   }
 }

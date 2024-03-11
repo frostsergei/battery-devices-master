@@ -39,7 +39,7 @@ export class YamlEditorComponent implements AfterViewInit {
     this.editor.setOptions(this.options);
     this.editor.setValue(this.text, -1);
     this.editor.setTheme(Theme);
-    this.setEditorMode_();
+    this.setEditorMode();
     this.editor.session.setUseWorker(false);
     this.editor.on('change', () => this.onEditorTextChange());
   }
@@ -65,7 +65,7 @@ export class YamlEditorComponent implements AfterViewInit {
       ]);
     }
   }
-  private setEditorMode_(): void {
+  private setEditorMode(): void {
     this.editor.getSession().setMode(new Mode.Mode());
   }
 

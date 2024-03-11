@@ -1,21 +1,35 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+
+import { EchoBody, EchoClient, ErrorResponse } from '~/client';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  constructor(private readonly http: HttpClient) {}
+  public requestMessage: string = '';
+  public responseMessage: string = '';
 
-  sendPingRequest() {
-    this.http.get('https://localhost:8080/ping').subscribe({
-      next: (value) =>
-        console.log('Observable emitted the next value: ', value),
-      error: (err) => console.error('Observable emitted an error: ', err),
-      complete: () =>
-        console.log('Observable emitted the complete notification'),
-    });
+  constructor(private readonly echoClient: EchoClient) {}
+
+  onSubmit() {
+    this.echo();
+  }
+
+  echo() {
+    console.log(this.requestMessage);
+    this.echoClient
+      .echo(new EchoBody({ message: this.requestMessage }))
+      .subscribe({
+        next: (value: EchoBody) => {
+          console.log(`response: ${value.message}`);
+          this.responseMessage = value.message;
+        },
+        error: (err: ErrorResponse) => {
+          console.log(`error: ${err.message}`);
+          this.responseMessage = `Error: ${err.message}`;
+        },
+      });
   }
 }

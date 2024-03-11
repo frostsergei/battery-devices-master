@@ -1,66 +1,62 @@
 using NSwag;
 
-public class Program
+const string corsPolicy = "cors";
+
+var app = CreateBuilder().Build();
+
+app.UseCors(corsPolicy);
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.UseHttpsRedirection();
+app.MapControllers();
+app.MapFallbackToFile("/index.html");
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    app.UseOpenApi();
+    app.UseSwaggerUi();
+}
 
-        // Add services to the container.
-        builder.Services.AddControllers();
+app.Run();
 
-        builder.Services.AddOpenApiDocument(options =>
+return;
+
+WebApplicationBuilder CreateBuilder()
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add services to the container.
+
+    builder.Services.AddControllers();
+    builder.Services.AddOpenApiDocument(options =>
+        options.PostProcess = document =>
         {
-            options.PostProcess = document =>
+            document.Info = new OpenApiInfo()
             {
-                document.Info = new OpenApiInfo
+                Title = "Battery devices master",
+                Version = "v1",
+                Description = "API for battery devices master.",
+                Contact = new OpenApiContact()
                 {
-                    Version = "v1",
-                    Title = "Dummy API",
-                    Description = "Wow. Such api. Many endpoints. Very cool.",
-                    TermsOfService = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Example Contact",
-                        Url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Example License",
-                        Url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"
-                    }
-                };
+                    Name = "Sergey Morozov",
+                    Url = "https://github.com/frostsergei",
+                },
             };
         });
-
-        // Add CORS support
-        builder.Services.AddCors(opt =>
-        {
-            opt.AddPolicy("CorsPolicy", policy =>
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(
+            name: corsPolicy,
+            configurePolicy: corsBuilder =>
             {
-                policy.AllowAnyHeader();
-                // For Angular development
-                policy.AllowAnyMethod().WithOrigins("http://localhost:4200");
+                corsBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
             });
-        });
+    });
 
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            // Add OpenAPI 3.0 document serving middleware
-            // Available at: http://localhost:<port>/swagger/v1/swagger.json
-            app.UseOpenApi();
-            // Add web UIs to interact with the document
-            // Available at: http://localhost:<port>/swagger
-            app.UseSwaggerUi();
-        }
-
-        app.UseStaticFiles();
-        app.UseCors("CorsPolicy");
-
-        app.MapControllers();
-        app.Run();
-    }
+    return builder;
 }

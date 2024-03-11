@@ -1,0 +1,13 @@
+{
+  "runtime": "Net80",
+  "defaultVariables": "Configuration=Debug",
+  "documentGenerator": {
+    "aspNetCoreToOpenApi": {
+      "project": "server",
+      "configuration": "$(Configuration)",
+      "workingDirectory": "server",
+      "output": "docs/api/api.yaml",
+      "newLineBehavior": "LF"
+    }
+  }
+}

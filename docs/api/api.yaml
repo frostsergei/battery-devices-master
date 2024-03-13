@@ -44,6 +44,39 @@ paths:
       responses:
         200:
           description: Server is healthy
+  /api/Yaml:
+    post:
+      tags:
+      - Yaml
+      summary: Writes the content of a YAML string to a YAML file in the static directory.
+      operationId: Yaml_Post
+      requestBody:
+        x-name: body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EchoBody'
+        required: true
+        x-position: 1
+      responses:
+        200:
+          description: Request message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EchoBody'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Unsuccessful file write
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     EchoBody:

@@ -17,13 +17,14 @@ import * as yamlParser from 'js-yaml';
   styleUrl: './yaml-editor.component.scss',
 })
 export class YamlEditorComponent implements AfterViewInit {
-  @ViewChild('editor') editorRef!: ElementRef;
-  @Output() textEmitter = new EventEmitter<string>();
-  isValid = false;
-  text: string = '';
-  mode: string = 'yaml';
-  editor!: Ace.Editor;
-  options = {
+  @ViewChild('editor') public editorRef!: ElementRef;
+  @Output() public textEmitter: EventEmitter<string> =
+    new EventEmitter<string>();
+  public isValid: boolean = false;
+  public text: string = '';
+  public mode: string = 'yaml';
+  public editor!: Ace.Editor;
+  public options = {
     showPrintMargin: false,
     highlightActiveLine: true,
     tabSize: 2,
@@ -31,9 +32,11 @@ export class YamlEditorComponent implements AfterViewInit {
     fontSize: 14,
     fontFamily: "'Roboto Mono Regular', monospace",
   };
+
   ngAfterViewInit(): void {
     this.initEditor();
   }
+
   private initEditor(): void {
     this.editor = edit(this.editorRef.nativeElement);
     this.editor.setOptions(this.options);
@@ -43,6 +46,7 @@ export class YamlEditorComponent implements AfterViewInit {
     this.editor.session.setUseWorker(false);
     this.editor.on('change', () => this.onEditorTextChange());
   }
+
   private onEditorTextChange(): void {
     this.text = this.editor.getValue();
     try {
@@ -65,11 +69,12 @@ export class YamlEditorComponent implements AfterViewInit {
       ]);
     }
   }
+
   private setEditorMode_(): void {
     this.editor.getSession().setMode(new Mode.Mode());
   }
 
-  emitYamlText() {
+  public emitYamlText() {
     this.textEmitter.emit(this.text);
   }
 }

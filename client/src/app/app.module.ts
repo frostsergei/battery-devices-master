@@ -6,10 +6,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from '~/app-routing.module';
 import { AppComponent } from '~/app.component';
 import { API_BASE_URL, EchoClient } from '~/client';
+import { YamlEditorModule } from '~/yaml-editor/yaml-editor.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule,
+    YamlEditorModule,
+  ],
   providers: [
     EchoClient,
     { provide: API_BASE_URL, useValue: 'https://localhost:7155' },

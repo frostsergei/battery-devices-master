@@ -10,6 +10,7 @@ import { EchoBody, EchoClient, ErrorResponse } from '~/client';
 export class AppComponent {
   public requestMessage: string = '';
   public responseMessage: string = '';
+  public yamlText: string = '';
 
   constructor(private readonly echoClient: EchoClient) {}
 
@@ -31,5 +32,10 @@ export class AppComponent {
           this.responseMessage = `Error: ${err.message}`;
         },
       });
+  }
+
+  onReceiveValidYamlText(newText: string): void {
+    this.yamlText = newText;
+    console.log(this.yamlText);
   }
 }

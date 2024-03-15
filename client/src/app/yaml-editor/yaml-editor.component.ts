@@ -70,7 +70,7 @@ export class YamlEditorComponent implements AfterViewInit {
     }
   }
 
-  private setEditorMode_(): void {
+  private setEditorMode(): void {
     this.editor.getSession().setMode(new Mode.Mode());
   }
 

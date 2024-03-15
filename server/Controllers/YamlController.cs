@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using BatteryDevicesMaster.Server.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -12,7 +14,17 @@ namespace BatteryDevicesMaster.Server.Controllers;
 [ApiController]
 public class YamlController : ControllerBase
 {
-    private static readonly string ConfigDirectory = Path.Combine("Config");
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<YamlController> _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="YamlController"/> class.
+    /// </summary>
+    public YamlController(IConfiguration configuration, ILogger<YamlController> logger)
+    {
+        _configuration = configuration;
+        _logger = logger;
+    }
     
     /// <summary>
     ///     Writes the content of a YAML string to a YAML file in the static directory.
@@ -21,32 +33,37 @@ public class YamlController : ControllerBase
     /// <response code="400">Bad request</response>
     /// <response code="500">Unsuccessful file write</response>
     [HttpPost]
-    [ProducesResponseType(typeof(EchoBody), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post([FromBody] EchoBody body)
+    public async Task<IActionResult> Post([FromBody] YamlConfigurationBody body)
     {
         try
         {
-            if (!Directory.Exists(ConfigDirectory))
+            string configDirectory = _configuration.GetValue<string>("ConfigurationDirectory");
+            if (!Directory.Exists(configDirectory))
             {
-                Directory.CreateDirectory(ConfigDirectory);
+                Directory.CreateDirectory(configDirectory);
+                _logger.LogDebug($"Directory '{configDirectory}' was created");
             }
 
             string fileName = "config.yaml";
 
-            string filePath = Path.Combine(ConfigDirectory, fileName);
+            string filePath = Path.Combine(configDirectory, fileName);
 
-            await WriteYamlFile(filePath, body.Message);
+            await WriteYamlFile(filePath, body.YamlConfiguration);
 
-            return Ok(new EchoBody { Message = $"File {fileName} successfully written." });
+            _logger.LogDebug($"File {fileName} successfully written.");
+            return Ok(new TextMessage { Message = $"File {fileName} successfully written." });
         }
         catch (YamlDotNet.Core.SemanticErrorException ex)
         {
+            _logger.LogWarning($"Error writing the file: {ex.Message}");
             return BadRequest(new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
         }
         catch (Exception ex)
         {
+            _logger.LogError($"Error writing the file: {ex.Message}");
             return StatusCode(500, new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
         }
     }
@@ -69,4 +86,16 @@ public class YamlController : ControllerBase
             await sw.FlushAsync();
         }
     }
+}
+
+/// <summary>
+///     Yaml configuration request body
+/// </summary>
+public struct YamlConfigurationBody
+{
+    /// <summary>
+    ///     Yaml configuration message
+    /// </summary>
+    [Required(AllowEmptyStrings = false, ErrorMessage = "YamlConfiguration must not be empty")]
+    public string YamlConfiguration { get; set; }
 }

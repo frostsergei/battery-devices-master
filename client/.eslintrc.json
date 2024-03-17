@@ -20,6 +20,11 @@
     "eslint-plugin-import"
   ],
   "rules": {
+    "@typescript-eslint/lines-between-class-members": [
+      "error", "always", {
+        "exceptAfterSingleLine": true
+      }
+    ],
     "prettier/prettier": [
       "error",
       {
@@ -38,6 +43,14 @@
           "sibling",
           "index"
         ],
+        "pathGroups": [
+          {
+            "pattern": "@angular/**",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["@angular/**"],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",

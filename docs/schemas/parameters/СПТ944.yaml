@@ -1,0 +1,562 @@
+templates:
+  - name: temperatureSensor
+    description: Назначение датчика температуры, подключаемого ко входу ТС$1.
+    type: selector
+    items:
+      - label: Нет
+        description: Не используется.
+      - label: t_$2
+        description: Измерение t_$2 по ТВ$3.
+      - label: t_х
+        description: Измерение t_х.
+      - label: t_в
+        description: Измерение t_в.
+      - label: t_4
+        description: Измерение t_4.
+      - label: t_5
+        description: Измерение t_5.
+      - label: t_6
+        description: Измерение t_6.
+  - name: pressureSensor
+    description: Назначение датчика давления, подключаемого ко входу ПД$1.
+    type: selector
+    items:
+      - label: Нет
+        description: Датчик не используется.
+      - label: P_$2
+        description: Измерение P_$2 по ТВ$3.
+      - label: P_х
+        description: Измерение P_х.
+      - label: P_4
+        description: Измерение P_4.
+      - label: P_5
+        description: Измерение P_5.
+      - label: P_6
+        description: Измерение P_6.
+  - name: pressure
+    type: decimal
+    conditions:
+      - dependsOn: ЕИ/P
+        oneOf: [0, 2]
+        precision: 0
+        min: 0
+        max: $1
+      - dependsOn: ЕИ/P:
+        oneOf: [1]
+        precision: 1
+        min: 0
+        max: $2
+  - name: volumeLimit
+    type: decimal
+    precision: 2
+    min: 0
+    max: 99999.99
+  - name: pipelineTemperature
+    description: Температуры в характерных точках температурного графика
+      трубопровода.
+    enabled: false
+    type: integer
+    min: 0
+    max: 175
+    conditions:
+      - dependsOn: КТГТВ_1
+        enabled: true
+      - dependsOn: КТГТВ_2
+        enabled: true
+  - name: setpoint
+    type: decimal
+    precision: 1
+    min: -999999.9
+    max: 999999.9
+  - name: alphanumericString
+    type: string
+    regex: [a-zA-Z0-9]+
+    nullable: true
+
+parameters:
+  - name: СП
+    description: Схема потребления.
+    type: composite
+    allOf:
+      - ТВ1
+      - ТВ2
+  - name: СА1
+    description: Альтернативная схема потребления 1.
+    type: composite
+    allOf:
+      - ТВ1
+      - ТВ2
+  - name: АСА1
+    description: Алгоритм перехода на альтернативную схему потребления СА1.
+    type: array
+    items:
+        type: integer
+  - name: СА2
+    description: Альтернативная схема потребления 2.
+    type: composite
+    allOf:
+      - ТВ1
+      - ТВ2
+  - name: АСА2
+    description: Алгоритм перехода на альтернативную схему потребления СА2.
+    type: array
+    items:
+        type: integer
+  - name: ЕИ/P
+    description: Единицы измерений давления.
+    type: selector
+    items:
+      - кг/см^2
+      - МПа
+      - бар
+  - name: ЕИ/Q
+    description: Единицы измерения тепловой энергии.
+    type: selector
+    items:
+      - Гкал
+      - ГДж
+      - MWh
+  - name: ПДО
+    description: Полная дата отсчёта.
+    type: composite
+    allOf:
+      - ТО
+      - ДО
+  - name: ТО
+    description: Время отсчёта.
+    type: time
+  - name: ДО
+    description: Дата отсчёта.
+    type: date
+  - name: РКЧ
+    description: Разовая корректировка часов.
+    type: integer
+    minimum: -99
+    max: 99
+  - name: СР
+    description: Расчётные сутки.
+    type: integer
+    minimum: 1
+    max: 28
+  - name: Расчётный час.
+    type: integer
+    minimum: 0
+    max: 23
+  - name: ПЛ
+    description: Перевод часов на зимнее и летнее время.
+    type: boolean
+  - name: t_хк
+    description: Константа температуры холодной воды.
+    type: integer
+    min: 0
+    max: 100
+  - name: PP_хк
+    description: Давление холодной воды.
+    type: composite
+    allOf:
+      - P_хк
+      - ЕИ/P
+  - name: P_хк
+    description: Константа давления холодной воды.
+    using: pressure:25:2.5
+  - name: ТС
+    description: Тип подключаемых датчиков температуры.
+    type: selector
+    items:
+      - 100П
+      - Pt100
+      - 100М
+  - name: ТС_{i}
+    using: temperatureSensor:{i}:{i / 3 + i % 3}:{i / 3 + 1}
+    for: 1:6:1
+  - name: ПД_{i}
+    using: pressureSensor:{i}:{i / 3 + i % 3}:{i / 3 + 1}
+    for: 1:6:1
+  - name: ВП_{i}
+    description: Верхний предел диапазона измерений датчиков избыточного давления ПД_{i}.
+    using: pressure:25:2.5
+    for: 1:6:1
+  - name: С_{i}
+    description: Цена импульса датчика объёма.
+    type: decimal
+    precision: 6
+    min: 0
+    max: 9.999999
+    for: 1:6:1
+  - name: G_в{i}
+    description: Верхний предел диапазона измерений объёмного расхода соответствующего датчика.
+    using: volumeLimit
+    for: 1:6:1
+  - name: G_н{i}
+    description: Нижний предел диапазона измерений объёмного расхода соответствующего датчика.
+    using: volumeLimit
+    for: 1:6:1
+  - name: G_отс{i}
+    description: Отсечка самоотхода соответствующего датчика объёма.
+    type: decimal
+    precision: 2
+    min: 0
+    max: 9999.99
+    nullable: true
+    for: 1:3:1
+  - name: G_отс{i}
+    description: Отсечка самоотхода соответствующего датчика объёма.
+    type: decimal
+    precision: 2
+    min: 0
+    max: 9999.99
+    for: 4:6:1
+  - name: NT
+    description: Сетевой номер.
+    type: integer
+    min: 0
+    max: 99
+  - name: ИД
+    description: Идентификатор.
+    type: integer
+    min: 0
+    max: 99999999
+  - name: КИ_1
+    description: Конфигурация RS232-совместимого интерфейса M4.
+    type: composite
+    allOf:
+      - ИДО_1
+      - СПД_1
+  - name: ИДО_1
+    description: Идентификатор оборудования.
+    type: selector
+    items:
+      - label: Компьютер, адаптеры
+        description: Компьютер, адаптеры АПС45, АДС98, АДС99.
+      - label: AT-модем
+        description: Телефонный или GSM-модем в режиме CSD.
+  - name: СПД_1
+    description: Скорость передачи данных.
+    type: selector
+    items:
+      - 2400 бит/c
+      - 4800 бит/с
+      - 9600 бит/с
+      - 19200 бит/с
+      - 38400 бит/с
+      - 57600 бит/с
+  - name: КИ_2
+    description: Конфигурация интерфейса RS232.
+    type: composite
+    allOf:
+      - ИДО_2
+      - СПД_2
+      - УП_2
+  - name: ИДО_2
+    description: Идентификатор оборудования.
+    type: selector
+    items:
+      - label: Компьютер, адаптеры
+        description: Компьютер, адаптеры АПС45, АДС98, АДС99.
+      - label: AT-модем
+        description: Телефонный или GSM-модем в режиме CSD.
+      - label: AT-модем (сервер)
+        description: Режим TCP-сервера.
+      - label: AT-модем (клиент)
+        description: Режим TCP-клиента.
+  - name: СПД_2
+    description: Скорось передачи данных.
+    type: selector
+    items:
+      - 2400 бит/c
+      - 4800 бит/с
+      - 9600 бит/с
+      - 19200 бит/с
+      - 38400 бит/с
+      - 57600 бит/с
+      - 115200 бит/c
+  - name: УП_2
+    description: Управление потоком (RTS/CTS).
+    type: boolean
+  - name: КИ_3
+    description: Конфигурация оптического интерфейса.
+    type: composite
+    allOf:
+      - ИДО_3
+      - СПД_3
+  - name: ИДО_3
+    description: Идентификатор оборудования.
+    type: selector
+    items:
+      - Адаптер АПС71
+      - Зарезервировано
+  - name: СПД_3
+    description: Скорость передачи данных.
+    type: selector
+    items:
+      - 2400 бит/c
+      - 4800 бит/с
+      - 9600 бит/с
+      - 19200 бит/с
+      - 38400 бит/с
+      - 57600 бит/с
+  - name: КД_1
+    description: Настройка дискретного входа D_1.
+    type: selector
+    items:
+      - label: Отключён
+        description: Контроль на входе отключён.
+      - label: Наличие сигнала
+        description: Активизация ДС03 при наличии сигнала.
+      - label: Отсутствие сигнала
+        description: Активизация ДС03 при отсутствии сигнала
+  - name: КД_2
+    description: Настройка дискретного входа D_2.
+    type: selector
+    items:
+      - label: Отключён
+        description: Контроль на входе отключён, разъём X6 не используется.
+    description: Идентификатор оборудования.
+    type: selector
+    items:
+      - label: Компьютер, адаптеры
+        description: Компьютер, адаптеры АПС45, АДС98, АДС99.
+      - label: AT-модем
+        description: Телефонный или GSM-модем в режиме CSD.
+      - label: Наличие сигнала
+        description: Активизация ДС04 при наличии сигнала.
+      - label: Отсутствие сигнала
+        description: Активизация ДС04 при отсутствии сигнала.
+      - label: Разомкнутный дискретный выход
+        description: Разъём X6 используется в качестве дискретного выхода.
+          Нормальное состояние выхода — разомкнуто. Выход замыкается при
+          возникновении любого события, входящего в список АКД_1.
+      - label: Замкнутный дискретный выход
+        description: Разъём X6 используется в качестве дискретного выхода.
+          Нормальное состояние выхода — замкнуто. Выход размыкается при
+          возникновении любого события, входящего в список АКД_1.
+  - name: КД_3
+    description: Настройка дискретного входа D_3.
+    type: selector
+    items:
+      - label: Отключён
+        description: Контроль на входе отключён.
+      - label: Наличие сигнала
+        description: Активизация ДС05 при наличии сигнала.
+      - label: Отсутствие сигнала
+        description: Активизация ДС05 при отсутствии сигнала.
+  - name: КД_4
+    description: Настройка дискретного входа D_4.
+    type: selector
+    items:
+      - label: Отключён
+        description: Контроль на входе отключён, разъём X7 не используется.
+      - label: Наличие сигнала
+        description: Активизация ДС06 при наличии сигнала.
+      - label: Отсутствие сигнала
+        description: Активизация ДС06 при отсутствии сигнала.
+      - label: Замкнутый дискретный выход
+        description: Разъём X7 используется в качестве дискретного выхода.
+          Нормальное состояние выхода — замкнуто. Выход размыкается при
+          возникновении любого события, входящего в список АКД_2.
+  - name: АКД_{i}
+    description: Алгоритм работы дискретного выхода порта D_{i * 2}.
+    enabled: false
+    type: array
+    items:
+        type: integer
+    conditions:
+      - dependsOn: КД_{i * 2}
+        oneOf: [3, 4]
+        enabled: true
+    for: 1:2:1
+  - name: АНС
+    description: Список событий, относимых к нештатным ситуациям.
+    type: array
+    items:
+        type: integer
+  - name: АСТ_{i}
+    description: Алгоритм работы счётчиков времени.
+    type: array
+    items:
+        type: integer
+    for: 1:20:1
+  - name: КТГ
+    description: Контроль температурного графика.
+    type: composite
+    allOf:
+      - КТГТВ_1
+      - КТГТВ_2
+  - name: КТГТВ_{i}
+    description: Контроль температурного графика для ТВ_{i}.
+    type: boolean
+  - name: t_п{i}
+    using: pipelineTemperature
+    for: 1:5:1
+  - name: t_о{i}
+    using: pipelineTemperature
+    for: 1:5:1
+  - name: КУ_{i}
+    description: Контроль по уставкам.
+    type: selector
+    items:
+      - label: Выключен
+        value: 000
+      - label: t_х
+        value: 001
+      - label: t_в
+        value: 002
+      - label: t_4
+        value: 003
+      - label: t_5
+        value: 004
+      - label: t_6
+        value: 005
+      - label: P_х
+        value: 006
+      - label: P_4
+        value: 007
+      - label: P_5
+        value: 008
+      - label: P_6
+        value: 009
+      - label: G_1 по ТВ_1
+        value: 100
+      - label: G_2 по ТВ_1
+        value: 101
+      - label: G_3 по ТВ_1
+        value: 102
+      - label: G_м1 по ТВ_1
+        value: 103
+      - label: G_м2 по ТВ_1
+        value: 104
+      - label: G_м3 по ТВ_1
+        value: 105
+      - label: t_1 по ТВ_1
+        value: 106
+      - label: t_2 по ТВ_1
+        value: 107
+      - label: dt по ТВ_1
+        value: 108
+      - label: t_3 по ТВ_1
+        value: 109
+      - label: t_ог по ТВ_1
+        value: 110
+      - label: P_1 по ТВ_1
+        value: 111
+      - label: P_2 по ТВ_1
+        value: 112
+      - label: P_3 по ТВ_1
+        value: 113
+      - label: G_1 по ТВ_2
+        value: 200
+      - label: G_2 по ТВ_2
+        value: 201
+      - label: G_3 по ТВ_2
+        value: 202
+      - label: G_м1 по ТВ_2
+        value: 203
+      - label: G_м2 по ТВ_2
+        value: 204
+      - label: G_м3 по ТВ_2
+        value: 205
+      - label: t_1 по ТВ_2
+        value: 206
+      - label: t_2 по ТВ_2
+        value: 207
+      - label: dt по ТВ_2
+        value: 208
+      - label: t_3 по ТВ_2
+        value: 209
+      - label: t_ог по ТВ_2
+        value: 210
+      - label: P_1 по ТВ_2
+        value: 211
+      - label: P_2 по ТВ_2
+        value: 212
+      - label: P_3 по ТВ_2
+        value: 213
+  - name: УВ_{i}
+    description: Верхняя установка.
+    using: setpoint
+    for: 1:5:1
+  - name: УН_{i}
+    description: Нижняя установка.
+    using: setpoint
+    for: 1:5:1
+  - name: AQ_с
+    description: Формула расчёта тепловой энергии Q_с.
+    type: array
+    items:
+        type: integer
+        min: -3
+        max: 3
+  # TODO: IDK what this should look like..
+  - name: КВС
+    description: Контроль входов ВС.
+    type: string
+    regex: [0-3][0-3][0-2]
+  - name: PLG
+    description: Логин провайдера. Используется при авторизации для доступа
+      к сети Интернет.
+    using: alphanumericString
+  - name: PPW
+    description: Пароль провайдера. Используется при авторизации для доступа
+      к сети Интернет
+    using: alphanumericString
+  - name: AT_{i}
+    description: Набор AT-команд, посылаемых модему.
+    using: alphanumericString
+  - name: ОТВ_{i}
+    description: Ожидаемые ответы от модема в ответ на посылку команд.
+    using: alphanumericString
+  - name: IP
+    description: IP адрес сервера, к которому предполагается подключение.
+    type: string
+    regex: [0-255].[0-255].[0-255].[0-255]
+  - name: PORT
+    description: Номер порта сервера.
+    type: integer
+    min: 1
+    max: 65535
+    nullable: true
+  - name: SLG
+    description: Логин для подключения к серверу.
+    using: alphanumericString
+  - name: SPW
+    description: Пароль для подключения к серверу.
+    using: alphanumericString
+  - name: T_ka
+    description: Период отправки Keep-Alive.
+    type: integer
+    min: 0
+    max: 65535
+  - name: t_хк2
+    description: Константа 2 температуры холодной воды.
+    type: integer
+    min: 0
+    max: 100
+  - name: PP_хк2
+    description: Давление 2 холодной воды.
+    type: composite
+    allOf:
+      - P_хк2
+      - ЕИ/P
+  - name: P_хк2
+    description: Константа давления 2 холодной воды.
+    using: pressure:25:2.5
+  - name: А_tхк2
+    description: Алгоритм использования констант t_хк2 и P_хк2.
+    type: array
+    items:
+        type: integer
+  - name: t_к4
+    description: Константа температуры по датчику P_4.
+    type: integer
+    min: 0
+    max: 175
+  - name: PP_хк4
+    description: Избыточное давление по датчику P_4.
+    type: composite
+    allOf:
+      - P_к4
+      - ЕИ/P
+  - name: P_к4
+    description: Константа избыточного давления по датчику P_4.
+    using: pressure:16:1.6
+

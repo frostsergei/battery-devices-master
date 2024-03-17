@@ -15,8 +15,8 @@ public class JsonSchemaController : ControllerBase
     /// </summary>
     /// <response code="200">Dummy json schema</response>
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult GetJsonSchema()
+    [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
+    public ActionResult<JsonResult> GetJsonSchema()
     {
         var dummySchema = new 
         {
@@ -74,5 +74,3 @@ public class JsonSchemaController : ControllerBase
         return new JsonResult(dummySchema);
     }
 }
-
-

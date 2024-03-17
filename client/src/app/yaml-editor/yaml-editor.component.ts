@@ -6,6 +6,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+
 import { Ace, edit } from 'ace-builds';
 import Mode from 'ace-builds/src-noconflict/mode-yaml';
 import Theme from 'ace-builds/src-noconflict/theme-dracula';
@@ -20,6 +21,7 @@ export class YamlEditorComponent implements AfterViewInit {
   @ViewChild('editor') public editorRef!: ElementRef;
   @Output() public textEmitter: EventEmitter<string> =
     new EventEmitter<string>();
+
   public isValid: boolean = false;
   public text: string = '';
   public mode: string = 'yaml';

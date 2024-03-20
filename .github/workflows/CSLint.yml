@@ -17,11 +17,13 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Install dotnet-format tool
-        run: dotnet tool install -g dotnet-format
-        
       - name: Check out code
         uses: actions/checkout@v2
+
+      - name: Install dotnet-format tool
+        run: dotnet tool install -g dotnet-format
+        working-directory: ./server
         
       - name: Run dotnet format
-        run: dotnet format ./server/server.csproj --verify-no-changes
+        run: dotnet format server.csproj --verify-no-changes
+        working-directory: ./server

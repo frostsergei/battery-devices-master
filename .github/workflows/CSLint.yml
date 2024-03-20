@@ -22,6 +22,8 @@ jobs:
         
       - name: Check out code
         uses: actions/checkout@v2
+        working-directory: ./server
         
       - name: Run dotnet format
         run: dotnet format server.csproj --verify-no-changes
+        working-directory: ./server

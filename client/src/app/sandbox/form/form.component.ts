@@ -16,7 +16,7 @@ export class FormComponent implements OnInit {
   stringField!: string;
   onlyIntegersAllowedPattern: string = '^\\d+$';
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.testForm = new FormGroup({

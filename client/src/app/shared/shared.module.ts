@@ -8,9 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 import { InputComponent } from './input/input.component';
+import { PreventDefaultStopPropagationDirective } from './input/prevent-default-stop-propagation.directive';
 
 @NgModule({
-  declarations: [InputComponent],
+  declarations: [InputComponent, PreventDefaultStopPropagationDirective],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -22,4 +23,4 @@ import { InputComponent } from './input/input.component';
   ],
   exports: [InputComponent],
 })
-export class SharedModule {}
+export class SharedModule { }

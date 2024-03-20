@@ -15,6 +15,6 @@
             <mat-error *ngIf="control?.hasError('pattern')">Format of input data is incorrect</mat-error>
         </ng-container>
     </mat-form-field>
-    <button #hindButton mat-icon-button color="primary" aria-label="Help"
-        (click)="toggleHint()"><mat-icon>help</mat-icon></button>
+    <button #hindButton mat-icon-button color="primary" aria-label="Help" (click)="toggleHint();"
+        PreventDefaultStopPropagation><mat-icon>help</mat-icon></button>
 </div>

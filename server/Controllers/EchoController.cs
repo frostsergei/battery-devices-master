@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using BatteryDevicesMaster.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 

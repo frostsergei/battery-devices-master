@@ -1,4 +1,4 @@
-using NSwag;
+﻿using NSwag;
 
 const string corsPolicy = "cors";
 

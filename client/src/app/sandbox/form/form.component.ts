@@ -16,7 +16,7 @@ export class FormComponent implements OnInit {
   stringField!: string;
   onlyIntegersAllowedPattern: string = '^\\d+$';
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.testForm = new FormGroup({
@@ -49,9 +49,6 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.testForm.invalid) {
-      return;
-    }
   }
 
   getInputType(inputType: string): InputType {

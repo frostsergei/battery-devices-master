@@ -9,8 +9,8 @@ import { InputType } from './InputType';
   styleUrl: './input.component.scss',
 })
 export class InputComponent {
-  @Input() label = '';
-  @Input() control = new FormControl('');
+  @Input() label: string = '';
+  @Input() control: FormControl = new FormControl('');
   @Input() inputType: InputType = InputType.text;
   @Input() controlType: string = 'input';
   @Input() placeholder: string = '';

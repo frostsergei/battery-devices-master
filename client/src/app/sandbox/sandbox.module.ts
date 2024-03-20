@@ -6,9 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { SharedModule } from '~/shared/shared.module';
-
 import { FormComponent } from './form/form.component';
+
+import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
   declarations: [FormComponent],
@@ -23,4 +23,4 @@ import { FormComponent } from './form/form.component';
     MatButtonModule,
   ],
 })
-export class SandboxModule { }
+export class SandboxModule {}

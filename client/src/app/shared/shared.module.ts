@@ -23,4 +23,4 @@ import { PreventDefaultStopPropagationDirective } from './input/prevent-default-
   ],
   exports: [InputComponent],
 })
-export class SharedModule { }
+export class SharedModule {}

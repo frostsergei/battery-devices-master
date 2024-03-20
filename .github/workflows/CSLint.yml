@@ -26,5 +26,4 @@ jobs:
           path: ./server
         
       - name: Run dotnet format
-        run: dotnet format server.csproj --verify-no-changes
-        working-directory: ./server
+        run: dotnet format ./server/server.csproj --verify-no-changes

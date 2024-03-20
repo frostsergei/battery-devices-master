@@ -36,16 +36,16 @@ public class YamlWriteService
 
         string filePath = Path.Combine(configDirectory, fileName);
 
-        await WriteYamlFile(filePath, yamlConfiguration);
+        await WriteYamlFile(yamlConfiguration, filePath);
     }
 
-    private async Task WriteYamlFile(string filePath, string yamlContent)
+    private async Task WriteYamlFile(string yamlConfiguration, string filePath)
     {
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 
-        var yamlObject = deserializer.Deserialize(new StringReader(yamlContent));
+        var yamlObject = deserializer.Deserialize(new StringReader(yamlConfiguration));
 
         var serializer = new SerializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)

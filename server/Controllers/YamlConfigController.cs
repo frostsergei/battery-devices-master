@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using BatteryDevicesMaster.Server.Models;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using BatteryDevicesMaster.Server.Services;
 
 namespace BatteryDevicesMaster.Server.Controllers;
 
@@ -15,14 +13,16 @@ namespace BatteryDevicesMaster.Server.Controllers;
 public class YamlConfigController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<YamlConfigController> _logger;
-
+    private readonly YamlWriteService _yamlWriteService;
+    private readonly ILogger<YamlWriteService> _logger;
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlConfigController"/> class.
     /// </summary>
-    public YamlConfigController(IConfiguration configuration, ILogger<YamlConfigController> logger)
+    public YamlConfigController(IConfiguration configuration, YamlWriteService yamlWriteService, 
+        ILogger<YamlWriteService> logger)
     {
         _configuration = configuration;
+        _yamlWriteService = yamlWriteService;
         _logger = logger;
     }
     
@@ -38,7 +38,24 @@ public class YamlConfigController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> PostParameters([FromBody] YamlConfigurationBody body)
     {
-        return await WriteConfigFile(body.YamlConfiguration, "parameters.yaml");
+        string fileName = _configuration.GetValue<string>("YamlParametersFileName");
+        try
+        { 
+            await _yamlWriteService.WriteConfigFile(body.YamlConfiguration, fileName);
+            
+            _logger.LogDebug($"File {fileName} successfully written.");
+            return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
+        }
+        catch  (YamlDotNet.Core.SemanticErrorException ex)
+        {
+            _logger.LogWarning($"Error writing {fileName}: {ex.Message}");
+            return StatusCode(400, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error writing {fileName}: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
+        }
     }
     
     /// <summary>
@@ -53,50 +70,18 @@ public class YamlConfigController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> PostForm([FromBody] YamlConfigurationBody body)
     {
-        return await WriteConfigFile(body.YamlConfiguration, "form.yaml");
-    }
-
-    private async Task WriteYamlFile(string filePath, string yamlContent)
-    {
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-
-        var yamlObject = deserializer.Deserialize(new StringReader(yamlContent));
-
-        var serializer = new SerializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-
-        using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
-        {
-            serializer.Serialize(sw, yamlObject);
-            await sw.FlushAsync();
-        }
-    }
-
-    private async Task<IActionResult> WriteConfigFile(string yamlConfiguration, string fileName)
-    {
+        string fileName = _configuration.GetValue<string>("YamlFormFileName");
         try
         {
-            string configDirectory = _configuration.GetValue<string>("ConfigurationDirectory");
-            if (!Directory.Exists(configDirectory))
-            {
-                Directory.CreateDirectory(configDirectory);
-                _logger.LogDebug($"Directory '{configDirectory}' was created");
-            }
-
-            string filePath = Path.Combine(configDirectory, fileName);
-
-            await WriteYamlFile(filePath, yamlConfiguration);
-
+            await _yamlWriteService.WriteConfigFile(body.YamlConfiguration, fileName);
+            
             _logger.LogDebug($"File {fileName} successfully written.");
-            return Ok(new TextMessage { Message = $"File {fileName} successfully written." });
+            return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
         }
-        catch (YamlDotNet.Core.SemanticErrorException ex)
+        catch  (YamlDotNet.Core.SemanticErrorException ex)
         {
             _logger.LogWarning($"Error writing {fileName}: {ex.Message}");
-            return BadRequest(new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
+            return StatusCode(400, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
         }
         catch (Exception ex)
         {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using BatteryDevicesMaster.Server.Models;
+using Microsoft.AspNetCore.Mvc;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -25,7 +25,7 @@ public class YamlController : ControllerBase
         _configuration = configuration;
         _logger = logger;
     }
-    
+
     /// <summary>
     ///     Writes the content of a YAML string to a YAML file in the static directory.
     /// </summary>

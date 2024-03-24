@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BatteryDevicesMaster.Server.Controllers;
@@ -18,44 +18,44 @@ public class JsonSchemaController : ControllerBase
     [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
     public ActionResult<JsonResult> GetJsonSchema()
     {
-        var dummySchema = new 
+        var dummySchema = new
         {
-            schema = new 
+            schema = new
             {
                 title = "A registration form",
                 description = "A simple form example.",
                 type = "object",
                 required = new string[] { "firstName", "lastName" },
-                properties = new 
+                properties = new
                 {
-                    firstName = new 
+                    firstName = new
                     {
                         type = "string",
                         title = "First name",
                         @default = "Chuck"
                     },
-                    lastName = new 
+                    lastName = new
                     {
                         type = "string",
                         title = "Last name"
                     },
-                    age = new 
+                    age = new
                     {
                         type = "integer",
                         title = "Age"
                     },
-                    bio = new 
+                    bio = new
                     {
                         type = "string",
                         title = "Bio"
                     },
-                    password = new 
+                    password = new
                     {
                         type = "string",
                         title = "Password",
                         minLength = 3
                     },
-                    telephone = new 
+                    telephone = new
                     {
                         type = "string",
                         title = "Telephone",
@@ -63,7 +63,7 @@ public class JsonSchemaController : ControllerBase
                     }
                 }
             },
-            model = new 
+            model = new
             {
                 lastName = "Norris",
                 age = 75,

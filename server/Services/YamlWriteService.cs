@@ -9,10 +9,10 @@ namespace BatteryDevicesMaster.Server.Services;
 /// </summary>
 public class YamlWriteService
 {
-    
+
     private readonly IConfiguration _configuration;
     private readonly ILogger<YamlWriteService> _logger;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlWriteService"/> class.
     /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using BatteryDevicesMaster.Server.Models;
 using BatteryDevicesMaster.Server.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BatteryDevicesMaster.Server.Controllers;
 
@@ -18,14 +18,14 @@ public class YamlConfigController : ControllerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlConfigController"/> class.
     /// </summary>
-    public YamlConfigController(IConfiguration configuration, YamlWriteService yamlWriteService, 
+    public YamlConfigController(IConfiguration configuration, YamlWriteService yamlWriteService,
         ILogger<YamlWriteService> logger)
     {
         _configuration = configuration;
         _yamlWriteService = yamlWriteService;
         _logger = logger;
     }
-    
+
     /// <summary>
     ///     Writes the content of a YAML string to a YAML file with configuration in the static directory.
     /// </summary>
@@ -40,13 +40,13 @@ public class YamlConfigController : ControllerBase
     {
         string fileName = _configuration.GetValue<string>("YamlParametersFileName");
         try
-        { 
+        {
             await _yamlWriteService.WriteConfigFile(body.YamlConfiguration, fileName);
-            
+
             _logger.LogDebug($"File {fileName} successfully written.");
             return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
         }
-        catch  (YamlDotNet.Core.SemanticErrorException ex)
+        catch (YamlDotNet.Core.SemanticErrorException ex)
         {
             _logger.LogWarning($"Error writing {fileName}: {ex.Message}");
             return StatusCode(400, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
@@ -57,7 +57,7 @@ public class YamlConfigController : ControllerBase
             return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
         }
     }
-    
+
     /// <summary>
     ///     Writes the content of a YAML string to a YAML file with form in the static directory.
     /// </summary>
@@ -74,11 +74,11 @@ public class YamlConfigController : ControllerBase
         try
         {
             await _yamlWriteService.WriteConfigFile(body.YamlConfiguration, fileName);
-            
+
             _logger.LogDebug($"File {fileName} successfully written.");
             return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
         }
-        catch  (YamlDotNet.Core.SemanticErrorException ex)
+        catch (YamlDotNet.Core.SemanticErrorException ex)
         {
             _logger.LogWarning($"Error writing {fileName}: {ex.Message}");
             return StatusCode(400, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });

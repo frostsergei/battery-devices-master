@@ -5,12 +5,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SandboxModule } from './sandbox/sandbox.module';
+import { YamlSenderModule } from './yaml-sender/yaml-sender.module';
 
 import { AppRoutingModule } from '~/app-routing.module';
 import { AppComponent } from '~/app.component';
-import { API_BASE_URL, EchoClient } from '~/client';
+import { API_BASE_URL, EchoClient, YamlConfigClient } from '~/client';
+import { EchoSenderModule } from '~/echo-sender/echo-sender.module';
 import { SharedModule } from '~/shared/shared.module';
-import { YamlEditorModule } from '~/yaml-editor/yaml-editor.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,13 +20,15 @@ import { YamlEditorModule } from '~/yaml-editor/yaml-editor.module';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    YamlEditorModule,
+    YamlSenderModule,
+    EchoSenderModule,
     SharedModule,
     SandboxModule,
     BrowserAnimationsModule,
   ],
   providers: [
     EchoClient,
+    YamlConfigClient,
     { provide: API_BASE_URL, useValue: 'https://localhost:7155' },
   ],
   bootstrap: [AppComponent],

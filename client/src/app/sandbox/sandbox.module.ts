@@ -9,10 +9,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormComponent } from './form/form.component';
 
 import { SharedModule } from '~/shared/shared.module';
+import { FormGenDemoComponent } from './form-gen-demo/form-gen-demo.component';
 
 @NgModule({
-  declarations: [FormComponent],
-  exports: [FormComponent],
+  declarations: [FormComponent, FormGenDemoComponent],
+  exports: [FormComponent, FormGenDemoComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -23,4 +24,4 @@ import { SharedModule } from '~/shared/shared.module';
     MatButtonModule,
   ],
 })
-export class SandboxModule {}
+export class SandboxModule { }

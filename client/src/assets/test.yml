@@ -1,0 +1,19 @@
+parameters:
+  - name: РКЧ
+    description: Разовая корректировка часов
+    type: integer
+    min: -99
+    max: 99
+  - name: С_1
+    description: Цена импульса датчика объёма
+    type: decimal
+    precision: 6
+    min: 0
+    max: 9.999999
+  - name: КВС
+    description: Контроль входов ВС
+    type: string
+    regex: "[0-3][0-3][0-3]"
+  - name: ДО
+    description: Дата отсчёта
+    type: date

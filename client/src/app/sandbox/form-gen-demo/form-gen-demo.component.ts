@@ -25,7 +25,6 @@ export class FormGenDemoComponent implements OnInit {
         if (item.hasOwnProperty('type')) {
           this.addFormControlBasedOnType(item.type, item.name, item.description);
         }
-       // console.log(this.toCustomControl(this.testForm.get(item.type + "FieldInForm"))?.name);
       });
     });
   }
@@ -50,21 +49,50 @@ export class FormGenDemoComponent implements OnInit {
     }
     return returnValue;
   }
+
   onSubmit() {
-    throw new Error('Method not implemented.');
+    const formData = this.collectFormData(this.testForm);
+    const jsonData = JSON.stringify(formData);
+
+  }
+  collectFormData(form: FormGroup): any {
+    const formData: any = {
+      TagList: {
+        '@TargetDevice': 'TSPT941_20',
+        '@Id': '90253',
+        '@SerialNumber': '',
+        Channel: {
+          '@No': '0',
+          '@Name': 'ОБЩ',
+          '@Kind': 'Common',
+          '@Prefix': 'ОБЩ',
+          '@Description': 'системный канал',
+          Tag: []
+        }
+      }
+    };
+    Object.keys(form.controls).forEach((key, index) => {
+      const control = form.get(key) as CustomFormControl;
+      formData.TagList.Channel.Tag.push({
+        '@Ordinal': index.toString(),
+        '@Name': control.name,
+        '@Id': control.name,
+        '@Value': control.value,
+        '@Eu': ''
+      });
+    });
+    return formData;
   }
   getControlNames(): string[] {
     return Object.keys(this.testForm.controls);
   }
-  // convert this to pipe
+  // convert this to pipe later
   toControl(absCtrl: AbstractControl | null): FormControl {
     const ctrl = absCtrl as FormControl;
-    // if(!ctrl) throw;
     return ctrl;
   }
   toCustomControl(absCtrl: AbstractControl | null): CustomFormControl {
     const ctrl = absCtrl as CustomFormControl;
-    // if(!ctrl) throw;
     return ctrl;
   }
 }

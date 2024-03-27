@@ -1,5 +1,5 @@
 <!-- Assuming testForm is your FormGroup -->
-<form [formGroup]="testForm">
+<form (submit)="onSubmit()" [formGroup]="testForm">
     <ng-container *ngFor="let controlName of getControlNames()">
         <app-input [control]="$any(testForm).get(controlName)" [label]="$any(testForm).get(controlName)?.name"
             [placeholder]="$any(testForm).get(controlName)?.placeholder"

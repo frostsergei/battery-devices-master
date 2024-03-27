@@ -2,9 +2,11 @@ import { FormControl } from '@angular/forms';
 
 export class CustomFormControl extends FormControl {
   // Additional property
-  name: string;
-  type: string;
-  placeholder: string;
+  name: string = '';
+  type: string = '';
+  placeholder: string = '';
+  hint: string = '';
+  description: string = '';
 
   constructor(
     initialValue: any,

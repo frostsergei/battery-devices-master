@@ -9,7 +9,7 @@ import {
 
 import * as yaml from 'js-yaml';
 
-import { CustomFormControl } from '../../shared/CustomFormControl';
+import { CustomFormControl } from '../../shared/classes/CustomFormControl';
 import { InputType } from '../../shared/input/InputType';
 
 import { JsonForm, JsonFormClient } from './../../../build/client';
@@ -28,37 +28,57 @@ export class FormGenDemoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getYamlFromFileGenerateForm();
+  }
+
+  // remake it so yml gets recieved from handle, segregate gen logic
+  getYamlFromFileGenerateForm() {
     this.http
       .get('assets/test.yml', { responseType: 'text' })
       .subscribe((data) => {
-        this.testData = yaml.load(data);
-
-        const dataArray = Array.isArray(this.testData.parameters)
-          ? this.testData.parameters
-          : [this.testData.parameters];
-        dataArray.forEach((item: any) => {
-          if (item.hasOwnProperty('type')) {
-            this.addFormControlBasedOnType(
-              item.type,
-              item.name,
-              item.description,
-            );
-          }
-        });
+        try {
+          this.testData = yaml.load(data);
+          const dataArray = Array.isArray(this.testData.parameters)
+            ? this.testData.parameters
+            : [this.testData.parameters];
+          dataArray.forEach((item: any) => {
+            if (item.hasOwnProperty('type')) {
+              this.addFormControlBasedOnType(
+                item.type,
+                item.name,
+                item.description,
+                item.hint,
+                item.description,
+              );
+            }
+          });
+        } catch {
+          console.error('Your yaml is broken...');
+        }
       });
   }
 
-  addFormControlBasedOnType(type: string, name: string, placeholder: string) {
+  // there will be some logic (adding validators) based on "type" later
+  addFormControlBasedOnType(
+    type: string,
+    name: string,
+    placeholder: string,
+    hint: string,
+    description: string,
+  ) {
     this.testForm.addControl(
       type + 'FieldInForm',
       new CustomFormControl('', [Validators.required], [], {
         type: type,
         name: name,
         placeholder: placeholder,
+        hint: hint,
+        description: description,
       }),
     );
   }
 
+  // move it closer to InputType, maybe in the same file
   getInputType(inputType: string): InputType {
     const returnValue: InputType | undefined =
       InputType[inputType as keyof typeof InputType];
@@ -71,9 +91,12 @@ export class FormGenDemoComponent implements OnInit {
   }
 
   onSubmit() {
-    const formData = this.collectFormData(this.testForm);
-    const jsonData = JSON.stringify(formData);
+    const formData = this.getJsonForServer(this.testForm);
+    this.postJsonToServer(formData);
+  }
 
+  postJsonToServer(formData: any) {
+    const jsonData = JSON.stringify(formData);
     this.jsonFormClient
       .post({
         form: jsonData,
@@ -88,7 +111,8 @@ export class FormGenDemoComponent implements OnInit {
       });
   }
 
-  collectFormData(form: FormGroup): any {
+  // make it more generic later
+  getJsonForServer(form: FormGroup): any {
     const formData: any = {
       TagList: {
         '@TargetDevice': 'TSPT941_20',
@@ -127,6 +151,7 @@ export class FormGenDemoComponent implements OnInit {
     return ctrl;
   }
 
+  // convert this to pipe later
   toCustomControl(absCtrl: AbstractControl | null): CustomFormControl {
     const ctrl = absCtrl as CustomFormControl;
     return ctrl;

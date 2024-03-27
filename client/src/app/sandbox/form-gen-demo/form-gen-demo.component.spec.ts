@@ -8,10 +8,9 @@ describe('FormGenDemoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FormGenDemoComponent]
-    })
-    .compileComponents();
-    
+      declarations: [FormGenDemoComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(FormGenDemoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

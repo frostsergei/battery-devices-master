@@ -60,6 +60,7 @@ WebApplicationBuilder CreateBuilder()
     });
 
     builder.Services.AddSingleton<YamlWriteService>();
+    builder.Services.AddSingleton<XmlWriteService>();
 
     return builder;
 }

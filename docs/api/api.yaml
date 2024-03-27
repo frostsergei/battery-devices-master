@@ -35,6 +35,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/JsonForm:
+    post:
+      tags:
+      - JsonForm
+      summary: Writes the content of JSON string to XML db file.
+      operationId: JsonForm_Post
+      requestBody:
+        x-name: jsonForm
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonForm'
+        required: true
+        x-position: 1
+      responses:
+        200:
+          description: Request message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextMessage'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Unsuccessful file write
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/JsonSchema:
     get:
       tags:
@@ -147,6 +180,17 @@ components:
         message:
           type: string
           description: "Error message"
+          minLength: 1
+    JsonForm:
+      type: object
+      description: "JSON form configuration request body"
+      additionalProperties: false
+      required:
+      - form
+      properties:
+        form:
+          type: string
+          description: "Message with JSON form"
           minLength: 1
     YamlConfigurationBody:
       type: object

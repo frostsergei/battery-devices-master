@@ -5,7 +5,7 @@
 1. Install Node.js. <br/>
    Installation instructions can be found here: https://nodejs.org/en/download
 2. Install nswag — automatic code generation tool. <br/>
-  `npm install nswag@14.0.7 -g`
+  `npm install nswag@14.0.3 -g`
 3. Restore NuGet packages. <br/>
   `dotnet restore`
 4. Build project. <br/>

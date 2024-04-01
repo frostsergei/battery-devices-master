@@ -16,8 +16,8 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>6.*-*</Version>
     </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
-    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="14.0.7" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.0.3" />
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="14.0.3" />
   </ItemGroup>
 
   <ItemGroup>

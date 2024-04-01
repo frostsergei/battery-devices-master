@@ -2,13 +2,17 @@
 
 ## Setup Instruction 
 
-1. Install nswag — automatic code generation tool.
+1. Install Node.js.
+  
+    Installation instructions can be found here: https://nodejs.org/en/download
+
+2. Install nswag — automatic code generation tool.
   `npm install nswag -g`
-2. Restore NuGet packages.
+3. Restore NuGet packages.
   `dotnet restore`
-3. Build project.
+4. Build project.
   `make`
-4. Run application.
+5. Run application.
   `./run` (Unix) or `dotnet run --project server -lp https`
 
 ## Итерация 2

@@ -21,7 +21,9 @@
   ],
   "rules": {
     "@typescript-eslint/lines-between-class-members": [
-      "error", "always", {
+      "error",
+      "always",
+      {
         "exceptAfterSingleLine": true
       }
     ],
@@ -50,13 +52,16 @@
             "position": "before"
           }
         ],
-        "pathGroupsExcludedImportTypes": ["@angular/**"],
+        "pathGroupsExcludedImportTypes": [
+          "@angular/**"
+        ],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true
         }
       }
-    ]
+    ],
+    "@typescript-eslint/ban-ts-comment": "off"
   }
 }

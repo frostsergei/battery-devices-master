@@ -20,6 +20,7 @@ import { JsonForm, JsonFormClient } from './../../../build/client';
   styleUrl: './form-gen-demo.component.scss',
 })
 export class FormGenDemoComponent implements OnInit {
+  // eslint-disable-next-line
   testData: any;
   testForm: FormGroup = new FormGroup({});
   constructor(
@@ -41,7 +42,9 @@ export class FormGenDemoComponent implements OnInit {
           const dataArray = Array.isArray(this.testData.parameters)
             ? this.testData.parameters
             : [this.testData.parameters];
+          // eslint-disable-next-line
           dataArray.forEach((item: any) => {
+            // eslint-disable-next-line
             if (item.hasOwnProperty('type')) {
               this.addFormControlBasedOnType(
                 item.type,
@@ -94,7 +97,7 @@ export class FormGenDemoComponent implements OnInit {
     const formData = this.getJsonForServer(this.testForm);
     this.postJsonToServer(formData);
   }
-
+  // eslint-disable-next-line
   postJsonToServer(formData: any) {
     const jsonData = JSON.stringify(formData);
     this.jsonFormClient
@@ -112,7 +115,9 @@ export class FormGenDemoComponent implements OnInit {
   }
 
   // make it more generic later
+  // eslint-disable-next-line
   getJsonForServer(form: FormGroup): any {
+    // eslint-disable-next-line
     const formData: any = {
       TagList: {
         '@TargetDevice': 'TSPT941_20',

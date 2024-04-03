@@ -1,15 +1,5 @@
-﻿<h1>Echo</h1>
+﻿<app-echo-sender></app-echo-sender>
 
-<p>This component demonstrates fetching data from the server.</p>
-
-<form (ngSubmit)="onSubmit()" #requestForm="ngForm">
-    <label for="request">Request:</label>
-    <input type="text" id="request" required [(ngModel)]="requestMessage" name="request">
-    <button type="submit" [disabled]="!requestForm.form.valid">Submit</button>
-</form>
-
-<p>Response: {{responseMessage}}</p>
-
-<app-yaml-editor (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
+<app-yaml-sender></app-yaml-sender>
 
 <app-form-gen-demo></app-form-gen-demo>

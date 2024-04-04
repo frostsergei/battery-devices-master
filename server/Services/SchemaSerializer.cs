@@ -27,7 +27,7 @@ public class SchemaSerializer
     /// <param name="fileName">Name of file in schemas directory</param>
     /// <exception cref="InvalidOperationException">Server configuration is incomplete</exception>
     /// <exception cref="FileNotFoundException">Directory/file not found</exception>
-    public async Task ReadSchemaFile(string fileName)
+    public async Task ReadSchema(string fileName)
     {
         var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
                                throw new InvalidOperationException("SchemasDirectory is null");
@@ -42,11 +42,11 @@ public class SchemaSerializer
     }
 
     /// <summary>
-    ///     Writes the content of a YAML string to a YAML file with form in the schema directory.
+    ///     Writes the content of a YAML string to a YAML file with form in the schemas directory.
     /// </summary>
-    public async Task WriteSchemaFile(string content, string fileName)
+    public async Task WriteSchema(string content, string fileName)
     {
-        string configDirectory = _configuration.GetValue<string>("ConfigurationDirectory");
+        string configDirectory = _configuration.GetValue<string>("SchemasDirectory");
         if (!Directory.Exists(configDirectory))
         {
             Directory.CreateDirectory(configDirectory);
@@ -55,10 +55,10 @@ public class SchemaSerializer
 
         string filePath = Path.Combine(configDirectory, fileName);
 
-        await WriteYamlFile(content, filePath);
+        await WriteYaml(content, filePath);
     }
 
-    private static async Task WriteYamlFile(string content, string filePath)
+    private static async Task WriteYaml(string content, string filePath)
     {
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)

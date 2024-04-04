@@ -39,11 +39,7 @@ WebApplicationBuilder CreateBuilder()
                 Title = "Battery devices master",
                 Version = "v1",
                 Description = "API for battery devices master.",
-                Contact = new OpenApiContact()
-                {
-                    Name = "Sergey Morozov",
-                    Url = "https://github.com/frostsergei",
-                },
+                Contact = new OpenApiContact() { Name = "Sergey Morozov", Url = "https://github.com/frostsergei", },
             };
         });
     builder.Services.AddCors(options =>
@@ -60,7 +56,7 @@ WebApplicationBuilder CreateBuilder()
     });
 
     builder.Services.AddSingleton<SchemaSerializer>();
-    builder.Services.AddSingleton<XmlWriteService>();
+    builder.Services.AddSingleton<XmlSerializer>();
 
     return builder;
 }

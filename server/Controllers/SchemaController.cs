@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using BatteryDevicesMaster.Server.Models;
 using BatteryDevicesMaster.Server.Services;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using Newtonsoft.Json;
 
 namespace BatteryDevicesMaster.Server.Controllers;
 
@@ -16,17 +14,22 @@ namespace BatteryDevicesMaster.Server.Controllers;
 public class SchemaController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+    private readonly XmlSerializer _xmlSerializer;
     private readonly SchemaSerializer _schemaSerializer;
-    private readonly ILogger<SchemaSerializer> _logger;
+    private readonly ILogger<SchemaController> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SchemaController"/> class.
     /// </summary>
-    public SchemaController(IConfiguration configuration, SchemaSerializer schemaSerializer,
-        ILogger<SchemaSerializer> logger)
+    public SchemaController(
+        IConfiguration configuration,
+        SchemaSerializer schemaSerializer,
+        XmlSerializer xmlSerializer,
+        ILogger<SchemaController> logger)
     {
         _configuration = configuration;
         _schemaSerializer = schemaSerializer;
+        _xmlSerializer = xmlSerializer;
         _logger = logger;
     }
 
@@ -40,11 +43,11 @@ public class SchemaController : ControllerBase
     [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public ActionResult<JsonResult> Get([FromQuery] string fileName)
+    public IActionResult Get([FromQuery] string fileName)
     {
         try
         {
-            // TODO(purposelessness): call SchemaSerializer.ReadSchemaFile and return schema
+            // TODO(purposelessness): call SchemaSerializer.ReadSchema and return schema
             return StatusCode(501, new ErrorResponse { Message = "Not implemented yet" });
         }
         catch (FileNotFoundException ex)
@@ -60,24 +63,53 @@ public class SchemaController : ControllerBase
     }
 
     /// <summary>
+    ///     Writes the content of database JSON to XML file.
+    /// </summary>
+    /// <response code="200">Request message</response>
+    /// <response code="400">Bad request</response>
+    /// <response code="500">Internal server error</response>
+    [HttpPost("database")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public IActionResult Post([FromBody] Database database)
+    {
+        try
+        {
+            _xmlSerializer.WriteXml(database.Content, "output.xdb");
+            return Ok();
+        }
+        catch (JsonReaderException ex)
+        {
+            _logger.LogWarning($"Error writing database: {ex.Message}");
+            return StatusCode(400, new ErrorResponse { Message = $"Error writing database: {ex.Message}" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error writing database: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error writing database: {ex.Message}" });
+        }
+    }
+
+    /// <summary>
     ///     Writes the content of a YAML string to a YAML file with configuration in the static directory.
     /// </summary>
     /// <response code="200">Request message</response>
     /// <response code="400">Bad request</response>
     /// <response code="500">Unsuccessful file write</response>
     [HttpPost("parameters")]
-    [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> PostParameters([FromBody] YamlConfigurationBody body)
+    public async Task<IActionResult> PostParameters([FromBody] Schema body)
     {
         string fileName = _configuration.GetValue<string>("YamlParametersFileName");
         try
         {
-            await _schemaSerializer.WriteSchemaFile(body.YamlConfiguration, fileName);
+            await _schemaSerializer.WriteSchema(body.Content, fileName);
 
-            _logger.LogDebug($"File {fileName} successfully written.");
-            return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
+            _logger.LogDebug($"File {fileName} successfully written");
+            return Ok();
         }
         catch (YamlDotNet.Core.SemanticErrorException ex)
         {
@@ -96,20 +128,20 @@ public class SchemaController : ControllerBase
     /// </summary>
     /// <response code="200">Request message</response>
     /// <response code="400">Bad request</response>
-    /// <response code="500">Unsuccessful file write</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost("form")]
-    [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> PostForm([FromBody] YamlConfigurationBody body)
+    public async Task<IActionResult> PostForm([FromBody] Schema body)
     {
         string fileName = _configuration.GetValue<string>("YamlFormFileName");
         try
         {
-            await _schemaSerializer.WriteSchemaFile(body.YamlConfiguration, fileName);
+            await _schemaSerializer.WriteSchema(body.Content, fileName);
 
-            _logger.LogDebug($"File {fileName} successfully written.");
-            return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
+            _logger.LogDebug($"File {fileName} successfully written");
+            return Ok();
         }
         catch (YamlDotNet.Core.SemanticErrorException ex)
         {
@@ -127,7 +159,7 @@ public class SchemaController : ControllerBase
     ///      Returns dummy schema
     /// </summary>
     /// <response code="200">Dummy json schema</response>
-    [HttpGet]
+    [HttpGet("dummy")]
     [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
     public ActionResult<JsonResult> GetJsonSchema()
     {
@@ -161,11 +193,23 @@ public class SchemaController : ControllerBase
 /// <summary>
 ///     Yaml configuration request body
 /// </summary>
-public struct YamlConfigurationBody
+public struct Schema
 {
     /// <summary>
     ///     Yaml configuration message
     /// </summary>
-    [Required(AllowEmptyStrings = false, ErrorMessage = "YamlConfiguration must not be empty")]
-    public string YamlConfiguration { get; set; }
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Content must not be empty")]
+    public string Content { get; set; }
+}
+
+/// <summary>
+///     JSON form configuration request body
+/// </summary>
+public struct Database
+{
+    /// <summary>
+    ///     Message with JSON form
+    /// </summary>
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Content must not be empty")]
+    public string Content { get; set; }
 }

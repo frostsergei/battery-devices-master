@@ -5,9 +5,6 @@ namespace BatteryDevicesMaster.Server.Services.Helpers;
 
 public static partial class Parameter
 {
-    public const string MinKey = "min";
-    public const string MaxKey = "max";
-
     public enum MinMaxType
     {
         Min,

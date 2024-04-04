@@ -31,9 +31,11 @@ public class SchemaController : ControllerBase
     /// </summary>
     /// <response code="200">Schema for a client</response>
     /// <response code="404">File not found</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public ActionResult<JsonResult> Get([FromQuery] string fileName)
     {
         try
@@ -44,15 +46,18 @@ public class SchemaController : ControllerBase
             if (!Directory.Exists(schemasDirectory) || !System.IO.File.Exists(filePath))
             {
                 _logger.LogError($"{schemasDirectory} directory or {fileName} file not exist");
-                return StatusCode(404, new ErrorResponse() { Message = $"{fileName} file not found" });
+                return StatusCode(StatusCodes.Status404NotFound,
+                    new ErrorResponse() { Message = $"{fileName} file not found" });
             }
-            
-            
+
+            return StatusCode(StatusCodes.Status501NotImplemented,
+                new ErrorResponse { Message = "Not implemented yet" });
         }
         catch (Exception ex)
         {
             _logger.LogError($"Error getting schema for a client: {ex.Message}");
-            return StatusCode(500, new ErrorResponse { Message = $"Error getting schema for a client: {ex.Message}" });
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new ErrorResponse { Message = $"Error getting schema for a client: {ex.Message}" });
         }
     }
 
@@ -66,7 +71,7 @@ public class SchemaController : ControllerBase
     [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post([FromBody] YamlConfigurationBody body)
+    public async Task<ActionResult> Post([FromBody] YamlConfigurationBody body)
     {
         try
         {
@@ -90,12 +95,14 @@ public class SchemaController : ControllerBase
         catch (YamlDotNet.Core.SemanticErrorException ex)
         {
             _logger.LogWarning($"Error writing the file: {ex.Message}");
-            return BadRequest(new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
+            return StatusCode(StatusCodes.Status400BadRequest,
+                new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
         }
         catch (Exception ex)
         {
             _logger.LogError($"Error writing the file: {ex.Message}");
-            return StatusCode(500, new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
         }
     }
 

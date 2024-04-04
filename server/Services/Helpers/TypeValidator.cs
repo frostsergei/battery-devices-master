@@ -5,8 +5,6 @@ using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
 {
-    public const string TypeKey = "type";
-
     public enum Type
     {
         Integer,

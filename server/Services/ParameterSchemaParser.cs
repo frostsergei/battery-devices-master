@@ -109,29 +109,19 @@ public static class ParameterSchemaValidator
         templates = new ParameterObjectDictionary();
     }
 
-    public static void Parameters(List<object> parametersList, ParameterObjectDictionary templates,
-        out ParameterObjectDictionary parameters)
+    public static void Parameters(List<object> parametersList, out ParameterObjectDictionary parameters)
     {
         parameters = new ParameterObjectDictionary();
 
-        foreach (var parameter in parametersList)
+        foreach (var parameterObj in parametersList)
         {
-            var parameterObj = parameter as Dictionary<string, object> ??
-                               throw new ParameterSchemaParsingException(
-                                   "Invalid parameter in the 'parameters' section. It must be a dictionary",
-                                   ParameterSchemaLevel.Parameter);
+            var parameter = parameterObj as Dictionary<string, object> ??
+                            throw new ParameterSchemaParsingException(
+                                "Invalid parameter in the 'parameters' section. It must be a dictionary",
+                                ParameterSchemaLevel.Parameter);
 
-            foreach (var (key, _) in parameterObj)
-            {
-                if (!Parameter.FieldValidators.TryGetValue(key, out var validator))
-                {
-                    throw new ParameterSchemaParsingException(
-                        $"Invalid key '{key}' in the parameter object",
-                        ParameterSchemaLevel.Parameter);
-                }
-
-                validator(parameterObj, parameters, templates);
-            }
+            var parameterName = Parameter.GetName(parameter);
+            Parameter.Validate(parameterName, parameters);
         }
     }
 }

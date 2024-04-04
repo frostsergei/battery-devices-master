@@ -8,24 +8,54 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace BatteryDevicesMaster.Server.Controllers;
 
 /// <summary>
-///     Controller for working with YAML files.
+///     Controller for working with YAML schema files.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-public class YamlController : ControllerBase
+public class SchemaController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<YamlController> _logger;
+    private readonly ILogger<SchemaController> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YamlController"/> class.
+    /// Initializes a new instance of the <see cref="SchemaController"/> class.
     /// </summary>
-    public YamlController(IConfiguration configuration, ILogger<YamlController> logger)
+    public SchemaController(IConfiguration configuration, ILogger<SchemaController> logger)
     {
         _configuration = configuration;
         _logger = logger;
     }
-    
+
+    /// <summary>
+    ///      Returns a schema that client needs to render
+    /// </summary>
+    /// <response code="200">Schema for a client</response>
+    /// <response code="404">File not found</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public ActionResult<JsonResult> Get([FromQuery] string fileName)
+    {
+        try
+        {
+            var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
+                                   throw new InvalidOperationException("SchemasDirectory is null");
+            var filePath = Path.Combine(schemasDirectory, fileName);
+            if (!Directory.Exists(schemasDirectory) || !System.IO.File.Exists(filePath))
+            {
+                _logger.LogError($"{schemasDirectory} directory or {fileName} file not exist");
+                return StatusCode(404, new ErrorResponse() { Message = $"{fileName} file not found" });
+            }
+            
+            
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error getting schema for a client: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error getting schema for a client: {ex.Message}" });
+        }
+    }
+
     /// <summary>
     ///     Writes the content of a YAML string to a YAML file in the static directory.
     /// </summary>
@@ -40,16 +70,17 @@ public class YamlController : ControllerBase
     {
         try
         {
-            string configDirectory = _configuration.GetValue<string>("ConfigurationDirectory");
-            if (!Directory.Exists(configDirectory))
+            var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
+                                   throw new InvalidOperationException("SchemasDirectory is null");
+            if (!Directory.Exists(schemasDirectory))
             {
-                Directory.CreateDirectory(configDirectory);
-                _logger.LogDebug($"Directory '{configDirectory}' was created");
+                Directory.CreateDirectory(schemasDirectory);
+                _logger.LogDebug($"Directory '{schemasDirectory}' was created");
             }
 
-            string fileName = "config.yaml";
+            const string fileName = "config.yaml";
 
-            string filePath = Path.Combine(configDirectory, fileName);
+            var filePath = Path.Combine(schemasDirectory, fileName);
 
             await WriteYamlFile(filePath, body.YamlConfiguration);
 
@@ -68,7 +99,7 @@ public class YamlController : ControllerBase
         }
     }
 
-    private async Task WriteYamlFile(string filePath, string yamlContent)
+    private static async Task WriteYamlFile(string filePath, string yamlContent)
     {
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -80,11 +111,9 @@ public class YamlController : ControllerBase
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 
-        using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
-        {
-            serializer.Serialize(sw, yamlObject);
-            await sw.FlushAsync();
-        }
+        await using var sw = new StreamWriter(filePath, false, Encoding.UTF8);
+        serializer.Serialize(sw, yamlObject);
+        await sw.FlushAsync();
     }
 }
 

@@ -8,7 +8,7 @@ namespace BatteryDevicesMaster.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("/api/[controller]")]
-public class JsonSchemaController : ControllerBase
+public class YamlSchemaController : ControllerBase
 {
     /// <summary>
     ///      JsonSchema handler

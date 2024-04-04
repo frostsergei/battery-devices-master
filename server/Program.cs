@@ -1,3 +1,4 @@
+﻿using BatteryDevicesMaster.Server.Services;
 using NSwag;
 
 const string corsPolicy = "cors";
@@ -57,6 +58,9 @@ WebApplicationBuilder CreateBuilder()
                     .AllowAnyMethod();
             });
     });
+
+    builder.Services.AddSingleton<SchemaSerializer>();
+    builder.Services.AddSingleton<XmlWriteService>();
 
     return builder;
 }

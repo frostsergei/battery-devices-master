@@ -11,9 +11,12 @@ public static partial class Parameter
         Max,
     }
 
-    public class MinMaxValidator(MinMaxType minMaxType)
-        : TypeBasedValidator<decimal>(GetKey(minMaxType), KeyType.Additional)
+    public class MinMaxValidator : TypeBasedValidator<decimal>
     {
+        public MinMaxValidator(MinMaxType minMaxType) : base(GetKey(minMaxType), KeyType.Additional)
+        {
+        }
+
         public static string GetKey(MinMaxType minMaxType) => minMaxType == MinMaxType.Max ? MaxKey : MinKey;
 
         protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)

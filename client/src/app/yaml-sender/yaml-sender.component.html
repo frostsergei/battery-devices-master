@@ -1,0 +1,10 @@
+<div>
+
+<select [(ngModel)]="selectedFile" class="yaml-select">
+    <option value="form">Form file</option>
+    <option value="parameters">Parameters file</option>
+</select>
+
+<app-yaml-editor (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
+
+</div>

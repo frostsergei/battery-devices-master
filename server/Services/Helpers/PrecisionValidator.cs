@@ -4,8 +4,12 @@ using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
 {
-    public class PrecisionValidator() : TypeBasedValidator<int>(PrecisionKey, KeyType.Additional)
+    public class PrecisionValidator : TypeBasedValidator<int>
     {
+        public PrecisionValidator() : base(PrecisionKey, KeyType.Additional)
+        {
+        }
+
         protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
         {
             var parameter = parameters[parameterName];

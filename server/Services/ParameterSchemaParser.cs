@@ -1,4 +1,3 @@
-using BatteryDevicesMaster.Server.Models;
 using BatteryDevicesMaster.Server.Services.Helpers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -13,7 +12,6 @@ public enum ParameterSchemaLevel
     Parameters,
     Parameter,
     Templates,
-    Template,
 }
 
 /// <summary>
@@ -93,7 +91,7 @@ public static class ParameterSchemaValidator
                      throw new ParameterSchemaParsingException(
                          "Invalid 'parameters' section in the YAML file. It must be a list",
                          ParameterSchemaLevel.Parameters);
-        templates = [];
+        templates = new List<object>();
 
         if (yamlDict.TryGetValue(ParameterSchemaHelpers.TemplatesKey, out var templateList))
         {

@@ -38,8 +38,12 @@ public static partial class Parameter
         return ParseType(parameter[TypeKey].ToString()!);
     }
 
-    public sealed class TypeValidator() : TypeBasedValidator<string>(TypeKey, KeyType.Required)
+    public sealed class TypeValidator : TypeBasedValidator<string>
     {
+        public TypeValidator() : base(TypeKey, KeyType.Required)
+        {
+        }
+
         protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
         {
             var value = ValidateType(parameterName, parameters);

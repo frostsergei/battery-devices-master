@@ -35,6 +35,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/JsonForm:
+    post:
+      tags:
+      - JsonForm
+      summary: Writes the content of JSON string to XML db file.
+      operationId: JsonForm_Post
+      requestBody:
+        x-name: jsonForm
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonForm'
+        required: true
+        x-position: 1
+      responses:
+        200:
+          description: Request message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextMessage'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Unsuccessful file write
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/JsonSchema:
+    get:
+      tags:
+      - JsonSchema
+      summary: JsonSchema handler
+      operationId: JsonSchema_GetJsonSchema
+      responses:
+        200:
+          description: Dummy json schema
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
   /Ping:
     get:
       tags:
@@ -44,12 +91,45 @@ paths:
       responses:
         200:
           description: Server is healthy
-  /api/Yaml:
+  /api/YamlConfig/parameters:
     post:
       tags:
-      - Yaml
-      summary: Writes the content of a YAML string to a YAML file in the static directory.
-      operationId: Yaml_Post
+      - YamlConfig
+      summary: Writes the content of a YAML string to a YAML file with configuration in the static directory.
+      operationId: YamlConfig_PostParameters
+      requestBody:
+        x-name: body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/YamlConfigurationBody'
+        required: true
+        x-position: 1
+      responses:
+        200:
+          description: Request message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextMessage'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Unsuccessful file write
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/YamlConfig/form:
+    post:
+      tags:
+      - YamlConfig
+      summary: Writes the content of a YAML string to a YAML file with form in the static directory.
+      operationId: YamlConfig_PostForm
       requestBody:
         x-name: body
         content:
@@ -81,7 +161,7 @@ components:
   schemas:
     TextMessage:
       type: object
-      description: "Text message response body"
+      description: "Text message request/response body"
       additionalProperties: false
       required:
       - message
@@ -100,6 +180,17 @@ components:
         message:
           type: string
           description: "Error message"
+          minLength: 1
+    JsonForm:
+      type: object
+      description: "JSON form configuration request body"
+      additionalProperties: false
+      required:
+      - form
+      properties:
+        form:
+          type: string
+          description: "Message with JSON form"
           minLength: 1
     YamlConfigurationBody:
       type: object

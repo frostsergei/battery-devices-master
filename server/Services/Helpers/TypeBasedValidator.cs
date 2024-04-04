@@ -4,8 +4,15 @@ using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
 {
-    public class TypeBasedValidator<T>(string key, KeyType keyType, T? defaultValue = default) : Validator
+    public class TypeBasedValidator<T> : Validator
     {
+        public TypeBasedValidator(string key, KeyType keyType, T defaultValue = default!)
+        {
+            Key = key;
+            KeyType = keyType;
+            _defaultValue = defaultValue;
+        }
+
         protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
         {
             ValidateType(parameterName, parameters);
@@ -17,8 +24,12 @@ public static partial class Parameter
 
             if (!parameter.TryGetValue(Key, out var valueObj))
             {
-                parameter.Add(Key, defaultValue!);
-                return defaultValue!;
+                if (_defaultValue != null)
+                {
+                    parameter.Add(Key, _defaultValue);
+                }
+
+                return _defaultValue!;
             }
 
             if (valueObj is not T value)
@@ -31,7 +42,9 @@ public static partial class Parameter
             return value;
         }
 
-        public sealed override string Key => key;
-        public sealed override KeyType KeyType => keyType;
+        public sealed override string Key { get; }
+        public sealed override KeyType KeyType { get; }
+
+        private readonly T _defaultValue;
     }
 }

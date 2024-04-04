@@ -48,13 +48,13 @@ public static partial class Parameter
     }
 
     public static readonly string[] Keys =
-    [
+    {
         NameKey, DescriptionKey, NullableKey, EnabledKey, TypeKey, PrecisionKey, MinKey, MaxKey, RegexKey, ItemsKey,
         ConditionsKey, DependsOnKey, OneOfKey, AllOfKey, UsingKey, ForKey
-    ];
+    };
 
-    public static readonly List<Validator> Validators =
-    [
+    public static readonly List<Validator> Validators = new()
+    {
         new TypeValidator(),
         new TypeBasedValidator<string>(DescriptionKey, KeyType.Additional),
         new TypeBasedValidator<bool>(EnabledKey, KeyType.Optional, defaultValue: true),
@@ -70,7 +70,7 @@ public static partial class Parameter
         // allOf
         // using
         // for
-    ];
+    };
 
     public const string NameKey = "name";
     public const string DescriptionKey = "description";

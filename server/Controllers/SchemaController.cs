@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using BatteryDevicesMaster.Server.Models;
+using BatteryDevicesMaster.Server.Services;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -15,14 +16,17 @@ namespace BatteryDevicesMaster.Server.Controllers;
 public class SchemaController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<SchemaController> _logger;
+    private readonly SchemaSerializer _schemaSerializer;
+    private readonly ILogger<SchemaSerializer> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SchemaController"/> class.
     /// </summary>
-    public SchemaController(IConfiguration configuration, ILogger<SchemaController> logger)
+    public SchemaController(IConfiguration configuration, SchemaSerializer schemaSerializer,
+        ILogger<SchemaSerializer> logger)
     {
         _configuration = configuration;
+        _schemaSerializer = schemaSerializer;
         _logger = logger;
     }
 
@@ -40,87 +44,117 @@ public class SchemaController : ControllerBase
     {
         try
         {
-            var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
-                                   throw new InvalidOperationException("SchemasDirectory is null");
-            var filePath = Path.Combine(schemasDirectory, fileName);
-            if (!Directory.Exists(schemasDirectory) || !System.IO.File.Exists(filePath))
-            {
-                _logger.LogError($"{schemasDirectory} directory or {fileName} file not exist");
-                return StatusCode(StatusCodes.Status404NotFound,
-                    new ErrorResponse() { Message = $"{fileName} file not found" });
-            }
-
-            return StatusCode(StatusCodes.Status501NotImplemented,
-                new ErrorResponse { Message = "Not implemented yet" });
+            // TODO(purposelessness): call SchemaSerializer.ReadSchemaFile and return schema
+            return StatusCode(501, new ErrorResponse { Message = "Not implemented yet" });
+        }
+        catch (FileNotFoundException ex)
+        {
+            _logger.LogWarning($"Error getting schema for a client: {ex.Message}");
+            return StatusCode(404, new ErrorResponse() { Message = $"{fileName} file not found" });
         }
         catch (Exception ex)
         {
             _logger.LogError($"Error getting schema for a client: {ex.Message}");
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                new ErrorResponse { Message = $"Error getting schema for a client: {ex.Message}" });
+            return StatusCode(500, new ErrorResponse { Message = $"Error getting schema for a client: {ex.Message}" });
         }
     }
 
     /// <summary>
-    ///     Writes the content of a YAML string to a YAML file in the static directory.
+    ///     Writes the content of a YAML string to a YAML file with configuration in the static directory.
     /// </summary>
     /// <response code="200">Request message</response>
     /// <response code="400">Bad request</response>
     /// <response code="500">Unsuccessful file write</response>
-    [HttpPost]
+    [HttpPost("parameters")]
     [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> Post([FromBody] YamlConfigurationBody body)
+    public async Task<IActionResult> PostParameters([FromBody] YamlConfigurationBody body)
     {
+        string fileName = _configuration.GetValue<string>("YamlParametersFileName");
         try
         {
-            var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
-                                   throw new InvalidOperationException("SchemasDirectory is null");
-            if (!Directory.Exists(schemasDirectory))
-            {
-                Directory.CreateDirectory(schemasDirectory);
-                _logger.LogDebug($"Directory '{schemasDirectory}' was created");
-            }
-
-            const string fileName = "config.yaml";
-
-            var filePath = Path.Combine(schemasDirectory, fileName);
-
-            await WriteYamlFile(filePath, body.YamlConfiguration);
+            await _schemaSerializer.WriteSchemaFile(body.YamlConfiguration, fileName);
 
             _logger.LogDebug($"File {fileName} successfully written.");
-            return Ok(new TextMessage { Message = $"File {fileName} successfully written." });
+            return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
         }
         catch (YamlDotNet.Core.SemanticErrorException ex)
         {
-            _logger.LogWarning($"Error writing the file: {ex.Message}");
-            return StatusCode(StatusCodes.Status400BadRequest,
-                new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
+            _logger.LogWarning($"Error writing {fileName}: {ex.Message}");
+            return StatusCode(400, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error writing the file: {ex.Message}");
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                new ErrorResponse { Message = $"Error writing the file: {ex.Message}" });
+            _logger.LogError($"Error writing {fileName}: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
         }
     }
 
-    private static async Task WriteYamlFile(string filePath, string yamlContent)
+    /// <summary>
+    ///     Writes the content of a YAML string to a YAML file with form in the static directory.
+    /// </summary>
+    /// <response code="200">Request message</response>
+    /// <response code="400">Bad request</response>
+    /// <response code="500">Unsuccessful file write</response>
+    [HttpPost("form")]
+    [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> PostForm([FromBody] YamlConfigurationBody body)
     {
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
+        string fileName = _configuration.GetValue<string>("YamlFormFileName");
+        try
+        {
+            await _schemaSerializer.WriteSchemaFile(body.YamlConfiguration, fileName);
 
-        var yamlObject = deserializer.Deserialize(new StringReader(yamlContent));
+            _logger.LogDebug($"File {fileName} successfully written.");
+            return StatusCode(200, new TextMessage { Message = $"File {fileName} successfully written." });
+        }
+        catch (YamlDotNet.Core.SemanticErrorException ex)
+        {
+            _logger.LogWarning($"Error writing {fileName}: {ex.Message}");
+            return StatusCode(400, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error writing {fileName}: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
+        }
+    }
 
-        var serializer = new SerializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-
-        await using var sw = new StreamWriter(filePath, false, Encoding.UTF8);
-        serializer.Serialize(sw, yamlObject);
-        await sw.FlushAsync();
+    /// <summary>
+    ///      Returns dummy schema
+    /// </summary>
+    /// <response code="200">Dummy json schema</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
+    public ActionResult<JsonResult> GetJsonSchema()
+    {
+        var dummySchema = new
+        {
+            schema = new
+            {
+                title = "A registration form",
+                description = "A simple form example.",
+                type = "object",
+                required = new[] { "firstName", "lastName" },
+                properties = new
+                {
+                    firstName = new { type = "string", title = "First name", @default = "Chuck" },
+                    lastName = new { type = "string", title = "Last name" },
+                    age = new { type = "integer", title = "Age" },
+                    bio = new { type = "string", title = "Bio" },
+                    password = new { type = "string", title = "Password", minLength = 3 },
+                    telephone = new { type = "string", title = "Telephone", minLength = 10 }
+                }
+            },
+            model = new
+            {
+                lastName = "Norris", age = 75, bio = "Roundhouse kicking asses since 1940", password = "noneed"
+            }
+        };
+        return new JsonResult(dummySchema);
     }
 }
 

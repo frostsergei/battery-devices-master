@@ -8,7 +8,7 @@ public static partial class Parameter
 {
     public class RegexValidator : TypeBasedValidator<string>
     {
-        public RegexValidator() : base(RegexKey, KeyType.Optional)
+        public RegexValidator() : base(RegexKey, KeyType.Additional)
         {
             
         }

@@ -61,8 +61,8 @@ public static partial class Parameter
         new TypeBasedValidator<bool>(NullableKey, KeyType.Optional, defaultValue: false),
         new PrecisionValidator(),
         new MinMaxValidator(MinMaxType.Min),
-        new MinMaxValidator(MinMaxType.Max)
-        // regex
+        new MinMaxValidator(MinMaxType.Max),
+        new RegexValidator()
         // items
         // conditions
         // dependsOn

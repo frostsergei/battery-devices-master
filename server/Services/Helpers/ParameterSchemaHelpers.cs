@@ -62,14 +62,14 @@ public static partial class Parameter
         new PrecisionValidator(),
         new MinMaxValidator(MinMaxType.Min),
         new MinMaxValidator(MinMaxType.Max),
-        new RegexValidator()
+        new RegexValidator(),
+        new ForValidator(),
+        new AllOfValidator()
         // items
         // conditions
         // dependsOn
         // onOf
-        // allOf
         // using
-        // for
     };
 
     public const string NameKey = "name";

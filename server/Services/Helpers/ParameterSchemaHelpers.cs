@@ -64,11 +64,11 @@ public static partial class Parameter
         new MinMaxValidator(MinMaxType.Max),
         new RegexValidator(),
         new ForValidator(),
-        new AllOfValidator()
+        new AllOfValidator(),
+        new ConditionsValidator(),
+        new DependsOnValidator(),
+        new OneOfValidator(),
         // items
-        // conditions
-        // dependsOn
-        // onOf
         // using
     };
 

@@ -35,7 +35,7 @@ public static partial class Parameter
             if (valueObj is not T value)
             {
                 throw new ParameterSchemaParsingException(
-                    $"Invalid value for '{Key}' key. It must be a {nameof(T)}",
+                    $"Invalid value for '{Key}' key. It must be a {typeof(T).Name}",
                     ParameterSchemaLevel.Parameter);
             }
 

@@ -9,10 +9,9 @@ import {
 
 import * as yaml from 'js-yaml';
 
-import { CustomFormControl } from '../../shared/classes/CustomFormControl';
-import { InputType } from '../../shared/input/InputType';
-
-import { JsonForm, JsonFormClient } from './../../../build/client';
+import { JsonForm, JsonFormClient } from '~/client';
+import { CustomFormControl } from '~/shared/classes/CustomFormControl';
+import { InputType } from '~/shared/input/InputType';
 
 @Component({
   selector: 'app-form-gen-demo',
@@ -23,6 +22,7 @@ export class FormGenDemoComponent implements OnInit {
   // eslint-disable-next-line
   testData: any;
   testForm: FormGroup = new FormGroup({});
+
   constructor(
     private readonly http: HttpClient,
     private readonly jsonFormClient: JsonFormClient,
@@ -32,7 +32,7 @@ export class FormGenDemoComponent implements OnInit {
     this.getYamlFromFileGenerateForm();
   }
 
-  // remake it so yml gets recieved from handle, segregate gen logic
+  // TODO(go1vs1noob): remake it so yml gets recieved from handle, segregate gen logic
   getYamlFromFileGenerateForm() {
     this.http
       .get('assets/test.yml', { responseType: 'text' })
@@ -61,7 +61,7 @@ export class FormGenDemoComponent implements OnInit {
       });
   }
 
-  // there will be some logic (adding validators) based on "type" later
+  // TODO(go1vs1noob): there will be some logic (adding validators) based on "type" later
   addFormControlBasedOnType(
     type: string,
     name: string,
@@ -81,7 +81,7 @@ export class FormGenDemoComponent implements OnInit {
     );
   }
 
-  // move it closer to InputType, maybe in the same file
+  // TODO(go1vs1noob): move it closer to InputType, maybe in the same file
   getInputType(inputType: string): InputType {
     const returnValue: InputType | undefined =
       InputType[inputType as keyof typeof InputType];
@@ -97,6 +97,7 @@ export class FormGenDemoComponent implements OnInit {
     const formData = this.getJsonForServer(this.testForm);
     this.postJsonToServer(formData);
   }
+
   // eslint-disable-next-line
   postJsonToServer(formData: any) {
     const jsonData = JSON.stringify(formData);
@@ -114,7 +115,7 @@ export class FormGenDemoComponent implements OnInit {
       });
   }
 
-  // make it more generic later
+  // TODO(go1vs1noob): make it more generic later
   // eslint-disable-next-line
   getJsonForServer(form: FormGroup): any {
     // eslint-disable-next-line
@@ -150,13 +151,13 @@ export class FormGenDemoComponent implements OnInit {
     return Object.keys(this.testForm.controls);
   }
 
-  // convert this to pipe later
+  // TODO(go1vs1noob): convert this to pipe later
   toControl(absCtrl: AbstractControl | null): FormControl {
     const ctrl = absCtrl as FormControl;
     return ctrl;
   }
 
-  // convert this to pipe later
+  // TODO(go1vs1noob): convert this to pipe later
   toCustomControl(absCtrl: AbstractControl | null): CustomFormControl {
     const ctrl = absCtrl as CustomFormControl;
     return ctrl;

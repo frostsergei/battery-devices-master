@@ -6,11 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { API_BASE_URL, JsonFormClient } from '../../build/client';
-
 import { FormComponent } from './form/form.component';
 import { FormGenDemoComponent } from './form-gen-demo/form-gen-demo.component';
 
+import { API_BASE_URL, JsonFormClient } from '~/client';
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({

@@ -1,21 +1,18 @@
 import { FormControl } from '@angular/forms';
 
 export class CustomFormControl extends FormControl {
-  // Additional property
+  // Additional properties
   name: string = '';
   type: string = '';
   placeholder: string = '';
   hint: string = '';
   description: string = '';
 
+  /* eslint-disable */
   constructor(
-    // eslint-disable-next-line
     initialValue: any,
-    // eslint-disable-next-line
     validatorOrOpts?: any,
-    // eslint-disable-next-line
     asyncValidator?: any,
-    // eslint-disable-next-line
     data?: any,
   ) {
     super(initialValue, validatorOrOpts, asyncValidator);
@@ -23,4 +20,5 @@ export class CustomFormControl extends FormControl {
     this.type = data.type;
     this.placeholder = data.placeholder;
   }
+  /* eslint-enable */
 }

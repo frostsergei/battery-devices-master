@@ -4,7 +4,6 @@ export enum InputType {
   datetime_local = 'datetime-local',
   email = 'email',
   month = 'month',
-  // eslint-disable-next-line
   number = 'number',
   // eslint-disable-next-line
   integer = 'number',

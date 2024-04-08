@@ -33,16 +33,17 @@ public class JsonFormController : ControllerBase
     /// <response code="400">Bad request</response>
     /// <response code="500">Unsuccessful file write</response>
     [HttpPost]
-    [ProducesResponseType(typeof(TextMessage), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public IActionResult Post([FromBody] JsonForm jsonForm)
     {
         try
         {
-            _xmlWriteService.WriteXml(jsonForm.Form, "output.xdb");
+            _xmlWriteService.WriteXml(jsonForm.Form, FileName);
             _logger.LogDebug($"File {FileName} successfully written.");
-            return StatusCode(200, new TextMessage { Message = $"File {FileName} successfully written." });
+            var fileStream = System.IO.File.OpenRead(_xmlWriteService.GetPathToXmlFile(FileName));
+            return new FileStreamResult(fileStream, "application/octet-stream");
         }
         catch (JsonReaderException ex)
         {

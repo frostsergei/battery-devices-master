@@ -51,6 +51,11 @@ public class XmlWriteService
         }
     }
 
+    public string GetPathToXmlFile(string fileName)
+    {
+        return Path.Combine(_configuration.GetValue<string>("XmlDbDirectory"),fileName);
+    }
+
     /// <summary>
     ///     Checks JSON string validation and parses JSON string to XDocument type
     /// </summary>

@@ -12,7 +12,7 @@ import * as yaml from 'js-yaml';
 import { JsonForm, JsonFormClient } from '~/client';
 import { CustomFormControl } from '~/shared/classes/CustomFormControl';
 import { InputType } from '~/shared/input/InputType';
-
+import {saveAs as downloadFile} from "file-saver";
 @Component({
   selector: 'app-form-gen-demo',
   templateUrl: './form-gen-demo.component.html',
@@ -32,7 +32,7 @@ export class FormGenDemoComponent implements OnInit {
     this.getYamlFromFileGenerateForm();
   }
 
-  // TODO(go1vs1noob): remake it so yml gets recieved from handle, segregate gen logic
+  // TODO(go1vs1noob): remake it so yml gets received from handle, segregate gen logic
   getYamlFromFileGenerateForm() {
     this.http
       .get('assets/test.yml', { responseType: 'text' })
@@ -106,8 +106,8 @@ export class FormGenDemoComponent implements OnInit {
         form: jsonData,
       } as JsonForm)
       .subscribe({
-        next: (data) => {
-          console.log(data);
+        next: (response) => {
+          downloadFile(response.data, "test.txt");
         },
         error: (error) => {
           console.error(error);

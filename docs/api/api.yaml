@@ -8,33 +8,6 @@ info:
     url: https://github.com/frostsergei
   version: v1
 paths:
-  /api/Echo:
-    post:
-      tags:
-      - Echo
-      summary: Echo-server handler
-      operationId: Echo_Echo
-      requestBody:
-        x-name: body
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TextMessage'
-        required: true
-        x-position: 1
-      responses:
-        200:
-          description: Request message
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TextMessage'
-        400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
   /api/JsonForm:
     post:
       tags:

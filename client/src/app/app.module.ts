@@ -9,8 +9,7 @@ import { YamlSenderModule } from './yaml-sender/yaml-sender.module';
 
 import { AppRoutingModule } from '~/app-routing.module';
 import { AppComponent } from '~/app.component';
-import { API_BASE_URL, EchoClient, YamlConfigClient } from '~/client';
-import { EchoSenderModule } from '~/echo-sender/echo-sender.module';
+import { API_BASE_URL, YamlConfigClient } from '~/client';
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
@@ -21,13 +20,11 @@ import { SharedModule } from '~/shared/shared.module';
     AppRoutingModule,
     FormsModule,
     YamlSenderModule,
-    EchoSenderModule,
     SharedModule,
     SandboxModule,
     BrowserAnimationsModule,
   ],
   providers: [
-    EchoClient,
     YamlConfigClient,
     { provide: API_BASE_URL, useValue: 'https://localhost:7155' },
   ],

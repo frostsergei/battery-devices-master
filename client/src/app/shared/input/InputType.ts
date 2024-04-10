@@ -5,10 +5,16 @@ export enum InputType {
   email = 'email',
   month = 'month',
   number = 'number',
+  // eslint-disable-next-line
+  integer = 'number',
+  // eslint-disable-next-line
+  decimal = 'number',
   password = 'password',
   search = 'search',
   tel = 'tel',
   text = 'text',
+  // eslint-disable-next-line
+  string = 'text',
   time = 'time',
   url = 'url',
   week = 'week',

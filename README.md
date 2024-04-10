@@ -8,9 +8,11 @@
   `npm install nswag@14.0.3 -g`
 3. Restore NuGet packages. <br/>
   `dotnet restore`
-4. Build project. <br/>
+4. Install client dependencies. <br/>
+  `cd client; npm i`
+5. Build project. <br/>
   `make` (Unix) <br/> OR <br/> `nswag run apigen.nswag` and `nswag run clientgen.nswag` (Windows)
-5. Run application. <br/>
+6. Run application. <br/>
   `./run` (Unix) <br/> OR <br/> `dotnet run --project server -lp https`
 
 ## Итерация 2

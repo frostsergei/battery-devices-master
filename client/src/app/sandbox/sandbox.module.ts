@@ -7,12 +7,14 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormComponent } from './form/form.component';
+import { FormGenDemoComponent } from './form-gen-demo/form-gen-demo.component';
 
+import { API_BASE_URL, JsonFormClient } from '~/client';
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
-  declarations: [FormComponent],
-  exports: [FormComponent],
+  declarations: [FormComponent, FormGenDemoComponent],
+  exports: [FormComponent, FormGenDemoComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -21,6 +23,10 @@ import { SharedModule } from '~/shared/shared.module';
     MatInputModule,
     BrowserAnimationsModule,
     MatButtonModule,
+  ],
+  providers: [
+    JsonFormClient,
+    { provide: API_BASE_URL, useValue: 'https://localhost:7155' },
   ],
 })
 export class SandboxModule {}

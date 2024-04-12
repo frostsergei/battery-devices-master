@@ -1,5 +1,6 @@
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
+using ParameterObject = Dictionary<string, object>;
 using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
@@ -13,9 +14,9 @@ public static partial class Parameter
 
     public abstract class Validator
     {
-        public void Validate(string parameterName, ParameterObjectDict parameters)
+        public void Validate(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            if (!parameters[parameterName].ContainsKey(Key))
+            if (!parameter.ContainsKey(Key))
             {
                 switch (KeyType)
                 {
@@ -32,10 +33,10 @@ public static partial class Parameter
                 }
             }
 
-            ValidateImpl(parameterName, parameters);
+            ValidateImpl(parameter, parameters);
         }
 
-        protected abstract void ValidateImpl(string parameterName, ParameterObjectDict parameters);
+        protected abstract void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters);
 
         public abstract string Key { get; }
         public abstract KeyType KeyType { get; }

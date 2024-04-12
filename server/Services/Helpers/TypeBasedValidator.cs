@@ -1,5 +1,6 @@
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
+using ParameterObject = Dictionary<string, object>;
 using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
@@ -13,15 +14,13 @@ public static partial class Parameter
             _defaultValue = defaultValue;
         }
 
-        protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
+        protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            ValidateType(parameterName, parameters);
+            ValidateType(parameter, parameters);
         }
 
-        protected T ValidateType(string parameterName, ParameterObjectDict parameters)
+        protected T ValidateType(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            var parameter = parameters[parameterName];
-
             if (!parameter.TryGetValue(Key, out var valueObj))
             {
                 if (_defaultValue != null)

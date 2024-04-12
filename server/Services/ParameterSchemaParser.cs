@@ -118,8 +118,8 @@ public static class ParameterSchemaValidator
                                 "Invalid parameter in the 'parameters' section. It must be a dictionary",
                                 ParameterSchemaLevel.Parameter);
 
-            var parameterName = Parameter.GetName(parameter);
-            Parameter.Validate(parameterName, parameters);
+            _ = Parameter.GetName(parameter);
+            Parameter.Validate(parameter, parameters);
         }
     }
 }

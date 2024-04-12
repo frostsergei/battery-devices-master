@@ -1,54 +1,54 @@
 ﻿using System.Text.RegularExpressions;
-using ParameterObjectDict =
-    System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
+using ParameterObject = Dictionary<string, object>;
+using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
+
 public static partial class Parameter
 {
+    public const string RegexKey = "regex";
+
     public class RegexValidator : TypeBasedValidator<string>
     {
         public RegexValidator() : base(RegexKey, KeyType.Additional)
         {
-            
         }
 
-        protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
+        protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            var parameter = parameters[parameterName];
-
             var type = Parameter.GetType(parameter);
-            
             switch (type)
             {
                 case Type.String:
                     break;
                 case Type.Integer:
-                case Type.Decimal: 
+                case Type.Decimal:
                 case Type.Date:
                 case Type.Time:
                 case Type.Selector:
                 case Type.Array:
                 case Type.Composite:
                     throw new ParameterSchemaParsingException(
-                        $"Type '{type.ToString()}' must not have 'regex'",
-                        ParameterSchemaLevel.Parameter);
+                        $"Type '{type.ToString()}' must not have 'regex'", ParameterSchemaLevel.Parameter);
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
-            
-            string value = ValidateType(parameterName, parameters);
+
+            string value = ValidateType(parameter, parameters);
             ValidateRegexPattern(value);
         }
-        private void ValidateRegexPattern(string pattern)
+
+        private static void ValidateRegexPattern(string pattern)
         {
             try
             {
-                Regex.Match(string.Empty, pattern); 
+                _ = Regex.Match(string.Empty, pattern);
             }
             catch (ArgumentException)
             {
-                throw new ArgumentException($"String \"{pattern}\" is not a valid regex.");
+                throw new ParameterSchemaParsingException(
+                    $"'{pattern}' is not a valid regex.", ParameterSchemaLevel.Parameter);
             }
         }
     }

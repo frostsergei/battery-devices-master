@@ -1,21 +1,21 @@
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
+using ParameterObject = Dictionary<string, object>;
 using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
 {
+    public const string PrecisionKey = "precision";
+
     public class PrecisionValidator : TypeBasedValidator<int>
     {
         public PrecisionValidator() : base(PrecisionKey, KeyType.Additional)
         {
         }
 
-        protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
+        protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            var parameter = parameters[parameterName];
-
             var type = Parameter.GetType(parameter);
-
             switch (type)
             {
                 case Type.Integer:
@@ -34,7 +34,7 @@ public static partial class Parameter
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
 
-            var value = ValidateType(parameterName, parameters);
+            var value = ValidateType(parameter, parameters);
 
             if (value < 0)
             {

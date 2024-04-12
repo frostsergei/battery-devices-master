@@ -18,14 +18,12 @@ public static partial class Parameter
             ParameterSchemaLevel.Parameter);
     }
 
-    public static void Validate(string parameterName, ParameterObjectDict parameters)
+    public static void Validate(ParameterObject parameter, ParameterObjectDict parameters)
     {
-        var parameter = parameters[parameterName];
-
         ValidateFieldNames(parameter);
         foreach (var v in Validators)
         {
-            v.Validate(parameterName, parameters);
+            v.Validate(parameter, parameters);
         }
     }
 
@@ -50,7 +48,7 @@ public static partial class Parameter
     public static readonly string[] Keys =
     {
         NameKey, DescriptionKey, NullableKey, EnabledKey, TypeKey, PrecisionKey, MinKey, MaxKey, RegexKey, ItemsKey,
-        ConditionsKey, DependsOnKey, OneOfKey, AllOfKey, UsingKey, ForKey
+        ConditionsKey, AllOfKey,
     };
 
     public static readonly List<Validator> Validators = new()
@@ -63,13 +61,9 @@ public static partial class Parameter
         new MinMaxValidator(MinMaxType.Min),
         new MinMaxValidator(MinMaxType.Max),
         new RegexValidator(),
-        new ForValidator(),
         new AllOfValidator(),
         new ConditionsValidator(),
-        new DependsOnValidator(),
-        new OneOfValidator(),
         // items
-        // using
     };
 
     public const string NameKey = "name";
@@ -77,15 +71,5 @@ public static partial class Parameter
     public const string NullableKey = "nullable";
     public const string EnabledKey = "enabled";
     public const string TypeKey = "type";
-    public const string PrecisionKey = "precision";
-    public const string MinKey = "min";
-    public const string MaxKey = "max";
-    public const string RegexKey = "regex";
     public const string ItemsKey = "items";
-    public const string ConditionsKey = "conditions";
-    public const string DependsOnKey = "dependsOn";
-    public const string OneOfKey = "oneOf";
-    public const string AllOfKey = "allOf";
-    public const string UsingKey = "using";
-    public const string ForKey = "for";
 }

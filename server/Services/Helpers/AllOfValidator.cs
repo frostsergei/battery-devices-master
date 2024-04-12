@@ -1,20 +1,21 @@
-﻿using ParameterObjectDict =
-    System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
+﻿namespace BatteryDevicesMaster.Server.Services.Helpers;
 
-namespace BatteryDevicesMaster.Server.Services.Helpers;
+using ParameterObject = Dictionary<string, object>;
+using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
+using ReadonlyParameterObjectDict = IReadOnlyDictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
 {
-    public class AllOfValidator : TypeBasedValidator<string[]>
+    public const string AllOfKey = "allOf";
+
+    public class AllOfValidator : TypeBasedValidator<List<string>>
     {
         public AllOfValidator() : base(AllOfKey, KeyType.Additional)
         {
-            
         }
 
-        protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
+        protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            var parameter = parameters[parameterName];
             var type = Parameter.GetType(parameter);
             switch (type)
             {
@@ -22,30 +23,40 @@ public static partial class Parameter
                     break;
                 case Type.String:
                 case Type.Integer:
-                case Type.Decimal: 
+                case Type.Decimal:
                 case Type.Date:
                 case Type.Time:
                 case Type.Selector:
                 case Type.Array:
                     throw new ParameterSchemaParsingException(
-                        $"Type '{type.ToString()}' must not have 'allOf'",
-                        ParameterSchemaLevel.Parameter);
+                        $"Type '{type.ToString()}' must not have 'allOf'", ParameterSchemaLevel.Parameter);
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
-            ValidateAgainstCompositeParametersInAllOf(parameterName, parameters);
+
+            var atomicParameters = ValidateType(parameter, parameters);
+
+            ValidateAtomicParameters(atomicParameters, parameters);
         }
 
-        private void ValidateAgainstCompositeParametersInAllOf(string parameterName, ParameterObjectDict parameters)
+        private static void ValidateAtomicParameters(
+            List<string> atomicParameters,
+            ReadonlyParameterObjectDict parameters)
         {
-            var atomicParametersNames = ValidateType(parameterName, parameters);
-            foreach (var atomicParameterName in atomicParametersNames)
+            foreach (var name in atomicParameters)
             {
-                var atomicParameter = parameters[atomicParameterName];
-                Type atomicParameterType = Parameter.GetType(atomicParameter);
-                if (atomicParameterType == Type.Composite)
+                if (!parameters.TryGetValue(name, out var parameter))
                 {
-                    throw new ArgumentException($"Composite parameter '{parameterName}' can't contain other composite parameter '{atomicParameterName}'");
+                    throw new ParameterSchemaParsingException(
+                        $"Atomic parameter '{name}' not found", ParameterSchemaLevel.Parameter);
+                }
+
+                var type = Parameter.GetType(parameter);
+                if (type == Type.Composite)
+                {
+                    throw new ParameterSchemaParsingException(
+                        $"Composite parameter '{name}' cannot be used in 'allOf' setting",
+                        ParameterSchemaLevel.Parameter);
                 }
             }
         }

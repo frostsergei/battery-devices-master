@@ -1,10 +1,13 @@
-using ParameterObjectDict =
-    System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
-
 namespace BatteryDevicesMaster.Server.Services.Helpers;
+
+using ParameterObject = Dictionary<string, object>;
+using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;
 
 public static partial class Parameter
 {
+    public const string MinKey = "min";
+    public const string MaxKey = "max";
+
     public enum MinMaxType
     {
         Min,
@@ -19,12 +22,9 @@ public static partial class Parameter
 
         public static string GetKey(MinMaxType minMaxType) => minMaxType == MinMaxType.Max ? MaxKey : MinKey;
 
-        protected override void ValidateImpl(string parameterName, ParameterObjectDict parameters)
+        protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            var parameter = parameters[parameterName];
-
             var type = Parameter.GetType(parameter);
-
             switch (type)
             {
                 case Type.Integer:
@@ -43,7 +43,7 @@ public static partial class Parameter
                     throw new ArgumentOutOfRangeException($"Unknown minMaxType {type.ToString()}");
             }
 
-            ValidateType(parameterName, parameters);
+            ValidateType(parameter, parameters);
         }
     }
 }

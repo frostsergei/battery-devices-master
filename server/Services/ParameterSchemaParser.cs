@@ -1,4 +1,4 @@
-using BatteryDevicesMaster.Server.Services.Helpers;
+﻿using BatteryDevicesMaster.Server.Services.Helpers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

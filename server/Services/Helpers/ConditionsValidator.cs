@@ -1,4 +1,4 @@
-namespace BatteryDevicesMaster.Server.Services.Helpers;
+﻿namespace BatteryDevicesMaster.Server.Services.Helpers;
 
 using ParameterObject = Dictionary<string, object>;
 using ParameterObjectDict = Dictionary<string, Dictionary<string, object>>;

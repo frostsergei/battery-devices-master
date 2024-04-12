@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using BatteryDevicesMaster.Server.Models;
 using BatteryDevicesMaster.Server.Services;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace BatteryDevicesMaster.Server.Controllers;
@@ -183,7 +183,10 @@ public class SchemaController : ControllerBase
             },
             model = new
             {
-                lastName = "Norris", age = 75, bio = "Roundhouse kicking asses since 1940", password = "noneed"
+                lastName = "Norris",
+                age = 75,
+                bio = "Roundhouse kicking asses since 1940",
+                password = "noneed"
             }
         };
         return new JsonResult(dummySchema);

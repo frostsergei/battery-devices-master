@@ -27,7 +27,7 @@ public class XmlWriteService
     /// </summary>
     public void WriteXml(string jsonString, string fileName)
     {
-        XNode node = ParseJsonToXml(jsonString);
+        XNode? node = ParseJsonToXml(jsonString);
         string configDirectory = _configuration.GetValue<string>("XmlDbDirectory");
 
         if (!Directory.Exists(configDirectory))
@@ -46,9 +46,16 @@ public class XmlWriteService
 
             using (XmlWriter xmlWriter = XmlWriter.Create(streamWriter, settings))
             {
-                node.WriteTo(xmlWriter);
+                node?.WriteTo(xmlWriter);
             }
         }
+    }
+    /// <summary>
+    ///     Gets path to fileName from directory in configuration
+    /// </summary>
+    public string GetPathToXmlFile(string fileName)
+    {
+        return Path.Combine(_configuration.GetValue<string>("XmlDbDirectory"), fileName);
     }
 
     /// <summary>

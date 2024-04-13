@@ -1,6 +1,9 @@
 <!-- Assuming testForm is your FormGroup -->
+
 <form (submit)="onSubmit()" [formGroup]="testForm">
-    <ng-container *ngFor="let controlName of getControlNames()">
+    
+    <ng-container *ngFor="let controlName of getControlNames()" >
+        <div class="row">    
         <app-input 
             [control]="$any(testForm).get(controlName)" 
             [label]="$any(testForm).get(controlName)?.name"
@@ -8,6 +11,8 @@
             [hint]="$any(testForm).get(controlName)?.hint"
             [inputType]="getInputType($any(testForm).get(controlName)?.type)">
         </app-input>
+        </div>
     </ng-container>
-    <button mat-stroked-button color="primary" class="" [disabled]="!testForm.valid">Send</button>
+    
+    <button class="btn btn-outline-light" type="button" [disabled]="!testForm.valid">Подтвердить</button>
 </form>

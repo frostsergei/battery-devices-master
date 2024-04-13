@@ -1,8 +1,9 @@
-﻿<h1>{{ title }}</h1>
-
-<nav>
-    <a routerLink="/">Заполнение формы</a>
-    <a routerLink="/settings">Настройка формы</a>
-</nav>
-
-<router-outlet></router-outlet>
+﻿<div class="custom-container text-center " data-bs-theme="light" >
+    <h1>{{ title }}</h1>
+    
+    <nav class="mb-4" >
+            <button class="btn btn-outline-light" routerLink="/">Заполнение формы</button>
+            <button class="btn btn-outline-light" routerLink="/settings">Настройка формы</button>
+    </nav>
+    <router-outlet></router-outlet>
+</div>

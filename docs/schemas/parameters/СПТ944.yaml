@@ -41,7 +41,7 @@ templates:
         precision: 0
         min: 0
         max: $1
-      - dependsOn: ЕИ/P:
+      - dependsOn: ЕИ/P
         oneOf: [1]
         precision: 1
         min: 0
@@ -70,7 +70,7 @@ templates:
     max: 999999.9
   - name: alphanumericString
     type: string
-    regex: [a-zA-Z0-9]+
+    regex: '[a-zA-Z0-9]+'
     nullable: true
 
 parameters:
@@ -311,13 +311,6 @@ parameters:
     items:
       - label: Отключён
         description: Контроль на входе отключён, разъём X6 не используется.
-    description: Идентификатор оборудования.
-    type: selector
-    items:
-      - label: Компьютер, адаптеры
-        description: Компьютер, адаптеры АПС45, АДС98, АДС99.
-      - label: AT-модем
-        description: Телефонный или GSM-модем в режиме CSD.
       - label: Наличие сигнала
         description: Активизация ДС04 при наличии сигнала.
       - label: Отсутствие сигнала
@@ -490,7 +483,7 @@ parameters:
   - name: КВС
     description: Контроль входов ВС.
     type: string
-    regex: [0-3][0-3][0-2]
+    regex: '[0-3][0-3][0-2]'
   - name: PLG
     description: Логин провайдера. Используется при авторизации для доступа
       к сети Интернет.
@@ -508,7 +501,7 @@ parameters:
   - name: IP
     description: IP адрес сервера, к которому предполагается подключение.
     type: string
-    regex: [0-255].[0-255].[0-255].[0-255]
+    regex: '[0-255].[0-255].[0-255].[0-255]'
   - name: PORT
     description: Номер порта сервера.
     type: integer

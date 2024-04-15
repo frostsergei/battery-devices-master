@@ -1,10 +1,12 @@
-<div>
+<div class="container row justify-content-center">
+    <div class="col-8 row p-3 justify-content-center rounded-2  border border-white">
+        <div class="col-5 min-width-100">
+            <select [(ngModel)]="selectedFile" class="form-select mb-3 w-100">
+                <option value="form">Form file</option>
+                <option value="parameters">Parameters file</option>
+            </select>
+        </div>
 
-<select [(ngModel)]="selectedFile" class="yaml-select">
-    <option value="form">Form file</option>
-    <option value="parameters">Parameters file</option>
-</select>
-
-<app-yaml-editor (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
-
+    <app-yaml-editor (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
+    </div>
 </div>

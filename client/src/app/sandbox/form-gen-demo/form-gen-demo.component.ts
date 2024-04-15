@@ -9,7 +9,7 @@ import {
 
 import * as yaml from 'js-yaml';
 
-import { JsonForm, JsonFormClient } from '~/client';
+import { Database, SchemaClient } from '~/client';
 import { CustomFormControl } from '~/shared/classes/CustomFormControl';
 import { InputType } from '~/shared/input/InputType';
 
@@ -25,7 +25,7 @@ export class FormGenDemoComponent implements OnInit {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly jsonFormClient: JsonFormClient,
+    private readonly SchemaClient: SchemaClient,
   ) {}
 
   ngOnInit(): void {
@@ -101,18 +101,16 @@ export class FormGenDemoComponent implements OnInit {
   // eslint-disable-next-line
   postJsonToServer(formData: any) {
     const jsonData = JSON.stringify(formData);
-    this.jsonFormClient
-      .post({
-        form: jsonData,
-      } as JsonForm)
-      .subscribe({
-        next: (data) => {
-          console.log(data);
-        },
-        error: (error) => {
-          console.error(error);
-        },
-      });
+    this.SchemaClient.post({
+      content: jsonData,
+    } as Database).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
   // TODO(go1vs1noob): make it more generic later

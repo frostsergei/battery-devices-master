@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
 
-import {
-  TextMessage,
-  ErrorResponse,
-  YamlConfigClient,
-  YamlConfigurationBody,
-} from '~/client';
+import { ErrorResponse, Schema, SchemaClient } from '~/client';
 
 @Component({
   selector: 'app-yaml-sender',
@@ -18,7 +13,7 @@ export class YamlSenderComponent {
   public responseMessage: string = '';
   public selectedFile: string = 'form';
 
-  constructor(private readonly yamlConfigClient: YamlConfigClient) {}
+  constructor(private readonly schemaClient: SchemaClient) {}
 
   onReceiveValidYamlText(newText: string): void {
     if (this.selectedFile === 'form') {
@@ -30,29 +25,27 @@ export class YamlSenderComponent {
 
   sendYamlForm(newText: string) {
     this.yamlFormText = newText;
-    this.yamlConfigClient
-      .postForm(new YamlConfigurationBody({ yamlConfiguration: newText }))
-      .subscribe({
-        next: (value: TextMessage) => {
-          console.log(`response: ${value.message}`);
-          this.responseMessage = value.message;
-        },
-        error: (err: ErrorResponse) => {
-          console.log(`error: ${err.message}`);
-          this.responseMessage = `Error: ${err.message}`;
-        },
-      });
+    this.schemaClient.postForm(new Schema({ content: newText })).subscribe({
+      next: () => {
+        console.log('Success: Form sent successfully');
+        this.responseMessage = 'Form sent successfully';
+      },
+      error: (err: ErrorResponse) => {
+        console.log(`error: ${err.message}`);
+        this.responseMessage = `Error: ${err.message}`;
+      },
+    });
     console.log(this.yamlFormText);
   }
 
   sendYamlParameters(newText: string) {
     this.yamlParametersText = newText;
-    this.yamlConfigClient
-      .postParameters(new YamlConfigurationBody({ yamlConfiguration: newText }))
+    this.schemaClient
+      .postParameters(new Schema({ content: newText }))
       .subscribe({
-        next: (value: TextMessage) => {
-          console.log(`response: ${value.message}`);
-          this.responseMessage = value.message;
+        next: () => {
+          console.log('Success: Parameters sent successfully');
+          this.responseMessage = 'Parameters sent successfully';
         },
         error: (err: ErrorResponse) => {
           console.log(`error: ${err.message}`);

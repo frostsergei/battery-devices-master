@@ -34,7 +34,7 @@ public static partial class Parameter
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
 
-            var atomicParameters = ValidateType(parameter, parameters);
+            var atomicParameters = ValidateType(parameter);
 
             ValidateAtomicParameters(atomicParameters, parameters);
         }

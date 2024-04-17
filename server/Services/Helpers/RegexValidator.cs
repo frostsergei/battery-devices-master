@@ -35,7 +35,7 @@ public static partial class Parameter
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
 
-            string value = ValidateType(parameter, parameters);
+            string value = ValidateType(parameter);
             ValidateRegexPattern(value);
         }
 

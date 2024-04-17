@@ -63,7 +63,7 @@ public static partial class Parameter
         new RegexValidator(),
         new AllOfValidator(),
         new ConditionsValidator(),
-        // items
+        new ItemsValidator(),
     };
 
     public const string NameKey = "name";
@@ -71,5 +71,4 @@ public static partial class Parameter
     public const string NullableKey = "nullable";
     public const string EnabledKey = "enabled";
     public const string TypeKey = "type";
-    public const string ItemsKey = "items";
 }

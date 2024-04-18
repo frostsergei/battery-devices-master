@@ -1,4 +1,4 @@
 <div>
-    <div #editor class="app-ace-editor rounded-2"></div>
-    <button class="btn btn-outline-light my-3" (click)="emitYamlText()" [disabled]="!isValid">Send YAML</button>
+    <div #editor class="app-ace-editor"></div>
+    <button (click)="emitYamlText()" [disabled]="!isValid">Send YAML</button>
 </div>

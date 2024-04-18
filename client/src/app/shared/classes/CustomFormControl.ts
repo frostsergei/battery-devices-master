@@ -18,9 +18,7 @@ export class CustomFormControl extends FormControl {
     super(initialValue, validatorOrOpts, asyncValidator);
     this.name = data.name;
     this.type = data.type;
-    this.hint = data.hint;
     this.placeholder = data.placeholder;
-    this.description = data.description;
   }
   /* eslint-enable */
 }

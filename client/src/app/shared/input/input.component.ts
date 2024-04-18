@@ -23,7 +23,6 @@ export class InputComponent {
   }
 
   toggleHint(): void {
-    console.log(this.hint);
     this.showHint = !this.showHint;
   }
 }

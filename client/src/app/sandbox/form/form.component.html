@@ -8,14 +8,12 @@
         placeholder="String placeholder" hint="String hint"></app-input>
     <button mat-stroked-button color="primary" class="" [disabled]="!testForm.valid">Send</button>
 </form>
-<ng-container *ngIf="showFormDebugInfo">
 <div>
     {{testForm.value | json}}
 </div>
-    <div >
-        {{dateFieldInForm.errors | json}}
-        {{intFieldInForm.errors | json}}
-        {{floatFieldInForm.errors | json}}
-        {{stringFieldInForm.errors | json}}
-    </div>
-</ng-container>
+<div>
+    {{dateFieldInForm.errors | json}}
+    {{intFieldInForm.errors | json}}
+    {{floatFieldInForm.errors | json}}
+    {{stringFieldInForm.errors | json}}
+</div>

@@ -1,5 +1,5 @@
-<div class="col-6 mx-auto">
-    <mat-form-field class="mb-3">
+<div>
+    <mat-form-field>
         <mat-label>{{label}}</mat-label>
         <input matInput *ngIf="controlType === 'input'" [type]="inputType" [formControl]="control"
             placeholder="{{placeholder}}" />
@@ -15,8 +15,6 @@
             <mat-error *ngIf="control?.hasError('pattern')">Format of input data is incorrect</mat-error>
         </ng-container>
     </mat-form-field>
-        <button mat-icon-button color="secondary" (click)="toggleHint();"
-                PreventDefaultStopPropagation>
-            <mat-icon>help</mat-icon>
-        </button>
+    <button #hindButton mat-icon-button color="primary" aria-label="Help" (click)="toggleHint();"
+        PreventDefaultStopPropagation><mat-icon>help</mat-icon></button>
 </div>

@@ -15,7 +15,7 @@ export class FormComponent implements OnInit {
   floatField!: number;
   stringField!: string;
   onlyIntegersAllowedPattern: string = '^\\d+$';
-
+  showFormDebugInfo: boolean = false;
   constructor() {}
 
   ngOnInit() {

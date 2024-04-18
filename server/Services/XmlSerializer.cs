@@ -27,7 +27,7 @@ public class XmlSerializer
     /// </summary>
     public void WriteXml(string jsonString, string fileName)
     {
-        var node = ConvertJsonToXml(jsonString);
+        var node = ParseJsonToXml(jsonString);
         string configDirectory = _configuration.GetValue<string>("XmlDbDirectory");
 
         if (!Directory.Exists(configDirectory))

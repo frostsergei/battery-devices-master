@@ -1,3 +1,9 @@
-﻿<app-yaml-sender></app-yaml-sender>
-
-<app-form-gen-demo></app-form-gen-demo>
+﻿<div class="container text-center ">
+    <h1>{{ title }}</h1>
+    
+    <nav class="mb-4" >
+            <button class="btn btn-outline-light" routerLink="/">Заполнение формы</button>
+            <button class="btn btn-outline-light" routerLink="/settings">Настройка формы</button>
+    </nav>
+    <router-outlet></router-outlet>
+</div>

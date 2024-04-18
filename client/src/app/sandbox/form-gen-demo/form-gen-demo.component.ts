@@ -7,10 +7,10 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { saveAs as downloadFile } from 'file-saver';
 import * as yaml from 'js-yaml';
 
-import { JsonForm, JsonFormClient } from '~/client';
+import { saveAs as downloadFile } from 'file-saver';
+import { Database, SchemaClient } from '~/client';
 import { CustomFormControl } from '~/shared/classes/CustomFormControl';
 import { InputType } from '~/shared/input/InputType';
 
@@ -26,7 +26,7 @@ export class FormGenDemoComponent implements OnInit {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly jsonFormClient: JsonFormClient,
+    private readonly SchemaClient: SchemaClient,
   ) {}
 
   ngOnInit(): void {
@@ -43,10 +43,10 @@ export class FormGenDemoComponent implements OnInit {
           const dataArray = Array.isArray(this.testData.parameters)
             ? this.testData.parameters
             : [this.testData.parameters];
+          // eslint-disable-next-line
+          dataArray.forEach((item: any) => {
             // eslint-disable-next-line
-            dataArray.forEach((item: any) => {
-            // eslint-disable-next-line
-              if (item.hasOwnProperty('type')) {
+            if (item.hasOwnProperty('type')) {
               this.addFormControlBasedOnType(
                 item.type,
                 item.name,
@@ -102,17 +102,15 @@ export class FormGenDemoComponent implements OnInit {
   // eslint-disable-next-line
   postJsonToServer(formData: any) {
     const jsonData = JSON.stringify(formData);
-    this.jsonFormClient
-      .post({
-        form: jsonData,
-      } as JsonForm)
-      .subscribe({
-        next: (response) => {
-          downloadFile(response.data, 'test.txt');
-        },
-        error: (error) => {
-          console.error(error);
-        },
+      this.SchemaClient.post({
+          content: jsonData,
+      } as Database).subscribe({
+          next: (response) => {
+              downloadFile(response.data, 'test.txt');
+          },
+          error: (error) => {
+              console.error(error);
+          },
       });
   }
 

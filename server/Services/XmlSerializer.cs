@@ -8,15 +8,15 @@ namespace BatteryDevicesMaster.Server.Services;
 /// <summary>
 ///     Service for writing Xml db files.
 /// </summary>
-public class XmlWriteService
+public class XmlSerializer
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<YamlWriteService> _logger;
+    private readonly ILogger<XmlSerializer> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XmlWriteService"/> class.
+    /// Initializes a new instance of the <see cref="XmlSerializer"/> class.
     /// </summary>
-    public XmlWriteService(IConfiguration configuration, ILogger<YamlWriteService> logger)
+    public XmlSerializer(IConfiguration configuration, ILogger<XmlSerializer> logger)
     {
         _configuration = configuration;
         _logger = logger;
@@ -27,7 +27,7 @@ public class XmlWriteService
     /// </summary>
     public void WriteXml(string jsonString, string fileName)
     {
-        XNode? node = ParseJsonToXml(jsonString);
+        var node = ConvertJsonToXml(jsonString);
         string configDirectory = _configuration.GetValue<string>("XmlDbDirectory");
 
         if (!Directory.Exists(configDirectory))
@@ -36,34 +36,26 @@ public class XmlWriteService
             _logger.LogDebug($"Directory '{configDirectory}' was created");
         }
 
-        using (StreamWriter streamWriter = new StreamWriter(Path.Combine(configDirectory, fileName)))
-        {
-            XmlWriterSettings settings = new XmlWriterSettings
-            {
-                Indent = true,
-                Encoding = System.Text.Encoding.UTF8
-            };
+        using StreamWriter streamWriter = new StreamWriter(Path.Combine(configDirectory, fileName));
+        XmlWriterSettings settings = new XmlWriterSettings { Indent = true, Encoding = System.Text.Encoding.UTF8 };
 
-            using (XmlWriter xmlWriter = XmlWriter.Create(streamWriter, settings))
-            {
-                node?.WriteTo(xmlWriter);
-            }
-        }
-    }
-    /// <summary>
-    ///     Gets path to fileName from directory in configuration
-    /// </summary>
-    public string GetPathToXmlFile(string fileName)
-    {
-        return Path.Combine(_configuration.GetValue<string>("XmlDbDirectory"), fileName);
+        using XmlWriter xmlWriter = XmlWriter.Create(streamWriter, settings);
+        node?.WriteTo(xmlWriter);
     }
 
     /// <summary>
     ///     Checks JSON string validation and parses JSON string to XDocument type
     /// </summary>
-    private XDocument? ParseJsonToXml(string jsonString)
+    private static XDocument? ConvertJsonToXml(string jsonString)
     {
         JToken.Parse(jsonString);
         return JsonConvert.DeserializeXNode(jsonString);
+    }
+    /// <summary>
+    ///     Returns path to file inside XmlDbDirectory 
+    /// </summary>
+    public string GetPathToXmlFile(string fileName)
+    {
+        return Path.Combine(_configuration.GetValue<string>("XmlDbDirectory"), fileName);
     }
 }

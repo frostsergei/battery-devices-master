@@ -9,7 +9,7 @@ import { YamlSenderModule } from './yaml-sender/yaml-sender.module';
 
 import { AppRoutingModule } from '~/app-routing.module';
 import { AppComponent } from '~/app.component';
-import { API_BASE_URL, YamlConfigClient } from '~/client';
+import { API_BASE_URL, SchemaClient } from '~/client';
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
@@ -25,7 +25,7 @@ import { SharedModule } from '~/shared/shared.module';
     BrowserAnimationsModule,
   ],
   providers: [
-    YamlConfigClient,
+    SchemaClient,
     { provide: API_BASE_URL, useValue: 'https://localhost:7155' },
   ],
   bootstrap: [AppComponent],

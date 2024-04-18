@@ -43,7 +43,7 @@ export class FormGenDemoComponent implements OnInit {
           const dataArray = Array.isArray(this.testData.parameters)
             ? this.testData.parameters
             : [this.testData.parameters];
-          // eslint-disable-next-line
+            // eslint-disable-next-line
             dataArray.forEach((item: any) => {
             // eslint-disable-next-line
               if (item.hasOwnProperty('type')) {

@@ -69,15 +69,17 @@ public class SchemaController : ControllerBase
     /// <response code="400">Bad request</response>
     /// <response code="500">Internal server error</response>
     [HttpPost("database")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public IActionResult Post([FromBody] Database database)
     {
         try
         {
-            _xmlSerializer.WriteXml(database.Content, "output.xdb");
-            return Ok();
+            const string fileName = "output.xdb";
+            _xmlSerializer.WriteXml(database.Content, fileName);
+            var fileStream = System.IO.File.OpenRead(_xmlSerializer.GetPathToXmlFile(fileName));
+            return new FileStreamResult(fileStream, "application/octet-stream");
         }
         catch (JsonReaderException ex)
         {

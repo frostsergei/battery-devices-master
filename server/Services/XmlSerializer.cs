@@ -27,7 +27,7 @@ public class XmlSerializer
     /// </summary>
     public void WriteXml(string jsonString, string fileName)
     {
-        var node = ConvertJsonToXml(jsonString);
+        var node = ParseJsonToXml(jsonString);
         string configDirectory = _configuration.GetValue<string>("XmlDbDirectory");
 
         if (!Directory.Exists(configDirectory))
@@ -42,11 +42,18 @@ public class XmlSerializer
         using XmlWriter xmlWriter = XmlWriter.Create(streamWriter, settings);
         node?.WriteTo(xmlWriter);
     }
+    /// <summary>
+    ///     Gets path to fileName from directory in configuration
+    /// </summary>
+    public string GetPathToXmlFile(string fileName)
+    {
+        return Path.Combine(_configuration.GetValue<string>("XmlDbDirectory"), fileName);
+    }
 
     /// <summary>
     ///     Checks JSON string validation and parses JSON string to XDocument type
     /// </summary>
-    private static XDocument? ConvertJsonToXml(string jsonString)
+    private XDocument? ParseJsonToXml(string jsonString)
     {
         JToken.Parse(jsonString);
         return JsonConvert.DeserializeXNode(jsonString);

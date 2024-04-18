@@ -1,19 +1,19 @@
 # battery-devices-master
 
-## Setup Instruction 
+## Setup Instruction
 
 1. Install Node.js. <br/>
    Installation instructions can be found here: https://nodejs.org/en/download
 2. Install nswag — automatic code generation tool. <br/>
-  `npm install nswag@14.0.3 -g`
+   `npm install nswag@14.0.3 -g`
 3. Restore NuGet packages. <br/>
-  `dotnet restore`
+   `dotnet restore`
 4. Install client dependencies. <br/>
-  `cd client; npm i`
+   `cd client; npm i; cd ..`
 5. Build project. <br/>
-  `make` (Unix) <br/> OR <br/> `nswag run apigen.nswag` and `nswag run clientgen.nswag` (Windows)
+   `make` (Unix) <br/> OR <br/> `nswag run apigen.nswag` and `nswag run clientgen.nswag` (Windows)
 6. Run application. <br/>
-  `./run` (Unix) <br/> OR <br/> `dotnet run --project server -lp https`
+   `./run` (Unix) <br/> OR <br/> `dotnet run --project server -lp https`
 
 ## Итерация 2
 

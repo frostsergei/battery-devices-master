@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { saveAs as downloadFile } from 'file-saver';
 import * as yaml from 'js-yaml';
 
 import { Database, SchemaClient } from '~/client';
@@ -32,7 +33,7 @@ export class FormGenDemoComponent implements OnInit {
     this.getYamlFromFileGenerateForm();
   }
 
-  // TODO(go1vs1noob): remake it so yml gets recieved from handle, segregate gen logic
+  // TODO(go1vs1noob): remake it so yml gets received from handle, segregate gen logic
   getYamlFromFileGenerateForm() {
     this.http
       .get('assets/test.yml', { responseType: 'text' })
@@ -43,9 +44,9 @@ export class FormGenDemoComponent implements OnInit {
             ? this.testData.parameters
             : [this.testData.parameters];
           // eslint-disable-next-line
-          dataArray.forEach((item: any) => {
+            dataArray.forEach((item: any) => {
             // eslint-disable-next-line
-            if (item.hasOwnProperty('type')) {
+              if (item.hasOwnProperty('type')) {
               this.addFormControlBasedOnType(
                 item.type,
                 item.name,
@@ -104,8 +105,8 @@ export class FormGenDemoComponent implements OnInit {
     this.SchemaClient.post({
       content: jsonData,
     } as Database).subscribe({
-      next: (data) => {
-        console.log(data);
+      next: (responce) => {
+        downloadFile(responce.data, 'test.txt');
       },
       error: (error) => {
         console.error(error);

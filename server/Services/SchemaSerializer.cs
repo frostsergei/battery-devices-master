@@ -12,7 +12,7 @@ public class SchemaSerializer
     private readonly IConfiguration _configuration;
     private readonly ILogger<SchemaSerializer> _logger;
     private readonly ParameterSchemaParser _parameterSchemaParser;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SchemaSerializer"/> class.
     /// </summary>
@@ -38,7 +38,7 @@ public class SchemaSerializer
         {
             throw new FileNotFoundException($"{fileName} not found in {schemasDirectory}");
         }
-        var obj =  this._parameterSchemaParser.Read(filePath);
+        var obj = this._parameterSchemaParser.Read(filePath);
         return obj;
     }
 

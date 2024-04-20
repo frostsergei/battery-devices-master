@@ -6,8 +6,8 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace BatteryDevicesMaster.Server.Services;
 
-using ParameterObjectDictionary = Dictionary<string, Dictionary<string, object>>;
 using ParameterObject = Dictionary<object, object>;
+using ParameterObjectDictionary = Dictionary<string, Dictionary<string, object>>;
 
 public enum ParameterSchemaLevel
 {
@@ -61,40 +61,51 @@ public class ParameterSchemaParser
         ParameterSchemaValidator.TopLevel(yamlObject, out var parameters, out var templates);
         // TODO(go1vs1noob): call method to open 'templates' here
         OpenForCycles(parameters);
+
         return yamlObject;
     }
 
-    // TODO(go1vs1noob): make it less ugly
     // TODO(go1vs1noob): this algo of opening "for" cycles is not in-place yet. do we need to fix it?
     // TODO(go1vs1noob): we have issues if field in parameter looks like this: "min: {i}". {i} after casting is a dictionary {i: } and not a string "{i}"
     // TODO(go1vs1noob): add support for arithmetic operations with 'i'
-    public void OpenForCycles(List<object> parameters)
+    // TODO(go1vs1noob): add exceptions
+    private void OpenForCycles(List<object> parameters)
     {
+        const string ForKey = "for";
+        const string ForSeparator = ":";
+        const string IndexerVariable = "{i}";
+        
         var openedParametersToInclude = new List<ParameterObject>();
         var indexedParametersToRemove = new List<ParameterObject>();
         foreach (var parameter in parameters)
         {
-            var dictParameter = parameter as ParameterObject;
-            
-            if (!dictParameter.ContainsKey("for"))
+            var schemaParameter = parameter as ParameterObject;
+            if (!schemaParameter.ContainsKey(ForKey))
             {
                 continue;
             }
-            indexedParametersToRemove.Add(dictParameter);
-            
-            string[] forCycleParts = (dictParameter["for"] as string).Split(":"); 
+            ProcessParameterContainingForCycle(schemaParameter);
+        }
+        SwapIndexedParametersToOpenedParameters();
+
+
+        void ProcessParameterContainingForCycle(ParameterObject schemaParameter)
+        {
+            indexedParametersToRemove.Add(schemaParameter);
+
+            string[] forCycleParts = (schemaParameter[ForKey] as string).Split(ForSeparator);
             int start = int.Parse(forCycleParts[0]);
             int stop = int.Parse(forCycleParts[1]);
             int step = int.Parse(forCycleParts[2]);
-            
+
             for (int i = start; i < stop + 1; i += step)
             {
                 var openedParameter = new ParameterObject();
-                foreach (var (key, value) in dictParameter)
+                foreach (var (key, value) in schemaParameter)
                 {
-                    if (value.ToString().Contains("{i}"))
+                    if (value.ToString().Contains(IndexerVariable))
                     {
-                        openedParameter.Add(key, value.ToString().Replace("{i}", i.ToString()));
+                        openedParameter.Add(key, value.ToString().Replace(IndexerVariable, i.ToString()));
                     }
                     else
                     {
@@ -104,13 +115,16 @@ public class ParameterSchemaParser
                 openedParametersToInclude.Add(openedParameter);
             }
         }
-
-        parameters.AddRange(openedParametersToInclude);
-        foreach (var indexedParameter in indexedParametersToRemove)
+        void SwapIndexedParametersToOpenedParameters()
         {
-            parameters.Remove(indexedParameter);
+            parameters.AddRange(openedParametersToInclude);
+            foreach (var indexedParameter in indexedParametersToRemove)
+            {
+                parameters.Remove(indexedParameter);
+            }
         }
     }
+
 }
 
 public static class ParameterSchemaValidator

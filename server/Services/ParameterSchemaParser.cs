@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using BatteryDevicesMaster.Server.Services.Helpers;
+﻿using BatteryDevicesMaster.Server.Services.Helpers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -68,18 +67,17 @@ public class ParameterSchemaParser
     // TODO(go1vs1noob): this algo of opening "for" cycles is not in-place yet. do we need to fix it?
     // TODO(go1vs1noob): we have issues if field in parameter looks like this: "min: {i}". {i} after casting is a dictionary {i: } and not a string "{i}"
     // TODO(go1vs1noob): add support for arithmetic operations with 'i'
-    // TODO(go1vs1noob): add exceptions
     private void OpenForCycles(List<object> parameters)
     {
         const string ForKey = "for";
         const string ForSeparator = ":";
         const string IndexerVariable = "{i}";
-        
+
         var openedParametersToInclude = new List<ParameterObject>();
         var indexedParametersToRemove = new List<ParameterObject>();
         foreach (var parameter in parameters)
         {
-            var schemaParameter = parameter as ParameterObject;
+            var schemaParameter = parameter as ParameterObject ?? throw new ParameterSchemaParsingException("", ParameterSchemaLevel.Parameter);
             if (!schemaParameter.ContainsKey(ForKey))
             {
                 continue;
@@ -93,7 +91,9 @@ public class ParameterSchemaParser
         {
             indexedParametersToRemove.Add(schemaParameter);
 
-            string[] forCycleParts = (schemaParameter[ForKey] as string).Split(ForSeparator);
+            string[] forCycleParts = (schemaParameter[ForKey] as string
+                                      ?? throw new ParameterSchemaParsingException("'for' key must contain value of type 'string'", ParameterSchemaLevel.Parameter))
+                                      .Split(ForSeparator);
             int start = int.Parse(forCycleParts[0]);
             int stop = int.Parse(forCycleParts[1]);
             int step = int.Parse(forCycleParts[2]);

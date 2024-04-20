@@ -11,14 +11,16 @@ public class SchemaSerializer
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<SchemaSerializer> _logger;
-
+    private readonly ParameterSchemaParser _parameterSchemaParser;
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="SchemaSerializer"/> class.
     /// </summary>
-    public SchemaSerializer(IConfiguration configuration, ILogger<SchemaSerializer> logger)
+    public SchemaSerializer(IConfiguration configuration, ILogger<SchemaSerializer> logger, ParameterSchemaParser parameterSchemaParser)
     {
         _configuration = configuration;
         _logger = logger;
+        _parameterSchemaParser = parameterSchemaParser;
     }
 
     /// <summary>
@@ -27,7 +29,7 @@ public class SchemaSerializer
     /// <param name="fileName">Name of file in schemas directory</param>
     /// <exception cref="InvalidOperationException">Server configuration is incomplete</exception>
     /// <exception cref="FileNotFoundException">Directory/file not found</exception>
-    public async Task ReadSchema(string fileName)
+    public async Task<object> ReadSchema(string fileName)
     {
         var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
                                throw new InvalidOperationException("SchemasDirectory is null");
@@ -36,9 +38,8 @@ public class SchemaSerializer
         {
             throw new FileNotFoundException($"{fileName} not found in {schemasDirectory}");
         }
-
-        // TODO(purposelessness): read file content and parse
-        return;
+        var obj =  this._parameterSchemaParser.Read(filePath);
+        return obj;
     }
 
     /// <summary>

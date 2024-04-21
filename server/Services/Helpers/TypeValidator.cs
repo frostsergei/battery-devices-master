@@ -46,7 +46,7 @@ public static partial class Parameter
 
         protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            var value = ValidateType(parameter, parameters);
+            var value = ValidateType(parameter);
             ParseType(value);
         }
     }

@@ -43,7 +43,7 @@ public static partial class Parameter
                     throw new ArgumentOutOfRangeException($"Unknown minMaxType {type.ToString()}");
             }
 
-            ValidateType(parameter, parameters);
+            ValidateType(parameter);
         }
     }
 }

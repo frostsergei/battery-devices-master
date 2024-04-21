@@ -34,7 +34,7 @@ public static partial class Parameter
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
 
-            var value = ValidateType(parameter, parameters);
+            var value = ValidateType(parameter);
 
             if (value < 0)
             {

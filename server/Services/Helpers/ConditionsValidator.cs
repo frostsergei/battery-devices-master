@@ -15,7 +15,7 @@ public static partial class Parameter
 
         protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            ValidateType(parameter, parameters);
+            ValidateType(parameter);
             // TODO(purposelessness): validate conditions
         }
     }

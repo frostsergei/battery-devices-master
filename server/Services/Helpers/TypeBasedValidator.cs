@@ -16,10 +16,10 @@ public static partial class Parameter
 
         protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
-            ValidateType(parameter, parameters);
+            ValidateType(parameter);
         }
 
-        protected T ValidateType(ParameterObject parameter, ParameterObjectDict parameters)
+        protected T ValidateType(ParameterObject parameter)
         {
             if (!parameter.TryGetValue(Key, out var valueObj))
             {

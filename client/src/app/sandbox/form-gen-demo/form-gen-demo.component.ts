@@ -10,7 +10,7 @@ import {
 import { saveAs as downloadFile } from 'file-saver';
 import * as yaml from 'js-yaml';
 
-import { Database, SchemaClient } from '~/client';
+import {Database, FileResponse, SchemaClient} from '~/client';
 import { CustomFormControl } from '~/shared/classes/CustomFormControl';
 import { InputType } from '~/shared/input/InputType';
 
@@ -35,31 +35,32 @@ export class FormGenDemoComponent implements OnInit {
 
   // TODO(go1vs1noob): remake it so yml gets received from handle, segregate gen logic
   getYamlFromFileGenerateForm() {
-    this.http
-      .get('assets/test.yml', { responseType: 'text' })
-      .subscribe((data) => {
-        try {
-          this.testData = yaml.load(data);
-          const dataArray = Array.isArray(this.testData.parameters)
-            ? this.testData.parameters
-            : [this.testData.parameters];
-          // eslint-disable-next-line
-            dataArray.forEach((item: any) => {
-            // eslint-disable-next-line
-              if (item.hasOwnProperty('type')) {
-              this.addFormControlBasedOnType(
-                item.type,
-                item.name,
-                item.description,
-                item.hint,
-                item.description,
-              );
+    this.SchemaClient.getParameters()
+        .subscribe((fileResponse: FileResponse) => {
+          fileResponse.data.text().then((text) => {
+            try {
+              this.testData = yaml.load(text);
+              const dataArray = Array.isArray(this.testData.parameters)
+                  ? this.testData.parameters
+                  : [this.testData.parameters];
+              dataArray.forEach((item: any) => {
+                if (item.hasOwnProperty('type')) {
+                  this.addFormControlBasedOnType(
+                      item.type,
+                      item.name,
+                      item.description,
+                      item.hint,
+                      item.description,
+                  );
+                }
+              });
+            } catch {
+              console.error('Your yaml is broken...');
             }
+          }).catch((err) => {
+            console.error('Error reading the Blob data:', err);
           });
-        } catch {
-          console.error('Your yaml is broken...');
-        }
-      });
+        });
   }
 
   // TODO(go1vs1noob): there will be some logic (adding validators) based on "type" later

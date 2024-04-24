@@ -109,7 +109,7 @@ public class SchemaController : ControllerBase
         try
         {
             await _schemaSerializer.WriteSchema(body.Content, fileName);
-            
+
             _logger.LogDebug($"File {fileName} successfully written");
             return Ok();
         }
@@ -124,16 +124,16 @@ public class SchemaController : ControllerBase
             return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
         }
     }
-    
+
     /// <summary>
-    ///     
+    /// Get parameters file
     /// </summary>
     /// <response code="200">Request message</response>
     /// <response code="400">Bad request</response>
     /// <response code="500">Internal server error</response>
     [HttpGet("parameters")]
     [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public IActionResult GetParameters()
     {
@@ -141,6 +141,10 @@ public class SchemaController : ControllerBase
         {
             var fileStream = System.IO.File.OpenRead(Path.Combine("docs", "schemas", "parameters.yaml"));
             return new FileStreamResult(fileStream, "application/octet-stream");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse() { Message = $"Error getting parameters: {ex.Message}" });
         }
         catch (Exception ex)
         {

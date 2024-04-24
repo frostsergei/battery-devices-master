@@ -1,5 +1,5 @@
 <div class="container p-3 col-6 rounded-2 border border-white">
-    <form (submit)="onSubmit()" [formGroup]="testForm">
+    <form (submit)="onSubmit()" [formGroup]="testForm" *ngIf="!schemaFileEmpty">
         
         <ng-container *ngFor="let controlName of getControlNames()" >
             <div class="row">    
@@ -15,4 +15,5 @@
         
         <button class="btn btn-outline-light" type="submit" [disabled]="!testForm.valid">Подтвердить</button>
     </form>
+    <h2 *ngIf="schemaFileEmpty">Перейдите в "Настройка формы -> Схема параметров" и введите туда корректную схему в формате yml</h2>
 </div>

@@ -40,7 +40,7 @@ public class SchemaController : ControllerBase
     /// <response code="404">File not found</response>
     /// <response code="500">Internal server error</response>
     [HttpGet]
-    [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<object>> Get([FromQuery] string fileName)

@@ -29,4 +29,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="docs\schemas\" />
+  </ItemGroup>
+
 </Project>

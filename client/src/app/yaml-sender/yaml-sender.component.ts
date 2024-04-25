@@ -11,7 +11,7 @@ export class YamlSenderComponent {
   public yamlFormText: string = '';
   public yamlParametersText: string = '';
   public responseMessage: string = '';
-  public selectedFile: string = 'form';
+  public selectedFile: string = 'parameters';
 
   constructor(private readonly schemaClient: SchemaClient) {}
 

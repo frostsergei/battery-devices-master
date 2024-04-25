@@ -1,7 +1,7 @@
 ﻿services:
   server:
-    container_name: bdm-server
-    image: bdm-server
+    container_name: battery-devices-master-server
+    image: battery-devices-master-server
     build:
       context: .
       dockerfile: server/Dockerfile
@@ -18,8 +18,8 @@
       retries: 30
 
   client:
-    container_name: bdm-client
-    image: bdm-client
+    container_name: battery-devices-master-client
+    image: battery-devices-master-client
     build:
       context: .
       dockerfile: client/Dockerfile

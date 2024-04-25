@@ -34,5 +34,6 @@ RUN apt update&&\
 
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build /docs /docs
 
 ENTRYPOINT ["dotnet", "server.dll"]

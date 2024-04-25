@@ -4,7 +4,7 @@ WORKDIR /app/client
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS client-build
 
 WORKDIR /app
-COPY ["docs/", "/docs"]
+COPY --from=battery-devices-master-server /docs/api /docs/api
 COPY ["clientgen.nswag", "./"]
 
 RUN apt update &&\

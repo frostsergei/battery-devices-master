@@ -1,34 +1,42 @@
 ﻿services:
-  server:
+  server-app:
     container_name: battery-devices-master-server
     image: battery-devices-master-server
     build:
       context: .
       dockerfile: server/Dockerfile
+    env_file:
+      - path: ./.env
+        required: true
     networks:
       - app-net
     ports:
-      - 7200:80
+      - ${SERVER_PORT}:80
     volumes:
       - ./docs:/docs
     healthcheck:
-      test: curl -f http://server:80/ping
+      test: curl -f http://server-app:80/ping
       interval: 1s
       timeout: 1s
       retries: 30
 
-  client:
+  client-app:
     container_name: battery-devices-master-client
     image: battery-devices-master-client
     build:
       context: .
       dockerfile: client/Dockerfile
+      args:
+        SERVER_IP: server-app
+    env_file:
+      - path: ./.env
+        required: true
     networks:
       - app-net
     ports:
-      - 4200:4200
+      - ${CLIENT_PORT}:80
     depends_on:
-      server:
+      server-app:
         condition: service_healthy
 
 networks:

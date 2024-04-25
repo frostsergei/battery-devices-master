@@ -1,4 +1,4 @@
-﻿using BatteryDevicesMaster.Server.Services;
+using BatteryDevicesMaster.Server.Services;
 using NSwag;
 
 const string corsPolicy = "cors";
@@ -9,16 +9,17 @@ app.UseCors(corsPolicy);
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
 app.MapControllers();
-app.MapFallbackToFile("/index.html");
+
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/swagger/index.html");
+    return Task.CompletedTask;
+});
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseOpenApi();
-    app.UseSwaggerUi();
-}
+app.UseOpenApi();
+app.UseSwaggerUi();
 
 app.Run();
 

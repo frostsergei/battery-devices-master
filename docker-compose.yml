@@ -1,0 +1,35 @@
+﻿services:
+  server:
+    container_name: bdm-server
+    image: bdm-server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    networks:
+      - app-net
+    ports:
+      - 7200:80
+    volumes:
+      - ./docs:/docs
+    healthcheck:
+      test: curl -f http://server:80/ping
+      interval: 1s
+      timeout: 1s
+      retries: 30
+
+  client:
+    container_name: bdm-client
+    image: bdm-client
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    networks:
+      - app-net
+    ports:
+      - 4200:4200
+    depends_on:
+      server:
+        condition: service_healthy
+
+networks:
+  app-net:

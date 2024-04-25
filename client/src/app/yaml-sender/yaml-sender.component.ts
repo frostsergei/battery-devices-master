@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { ToastrService } from 'ngx-toastr';
+
 import { ErrorResponse, Schema, SchemaClient } from '~/client';
 
 @Component({
@@ -13,7 +15,10 @@ export class YamlSenderComponent {
   public responseMessage: string = '';
   public selectedFile: string = 'parameters';
 
-  constructor(private readonly schemaClient: SchemaClient) {}
+  constructor(
+    private readonly schemaClient: SchemaClient,
+    private toastr: ToastrService,
+  ) {}
 
   onReceiveValidYamlText(newText: string): void {
     if (this.selectedFile === 'form') {
@@ -28,10 +33,12 @@ export class YamlSenderComponent {
     this.schemaClient.postForm(new Schema({ content: newText })).subscribe({
       next: () => {
         console.log('Success: Form sent successfully');
+        this.toastr.success('Форма успешно отправлена!');
         this.responseMessage = 'Form sent successfully';
       },
       error: (err: ErrorResponse) => {
         console.log(`error: ${err.message}`);
+        this.toastr.error(`Ошибка: ${err.message}`);
         this.responseMessage = `Error: ${err.message}`;
       },
     });
@@ -45,10 +52,12 @@ export class YamlSenderComponent {
       .subscribe({
         next: () => {
           console.log('Success: Parameters sent successfully');
+          this.toastr.success('Параметры успешно отправлены!');
           this.responseMessage = 'Parameters sent successfully';
         },
         error: (err: ErrorResponse) => {
           console.log(`error: ${err.message}`);
+          this.toastr.error(`Ошибка: ${err.message}`);
           this.responseMessage = `Error: ${err.message}`;
         },
       });

@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ToastrModule } from 'ngx-toastr';
+
 import { SandboxModule } from './sandbox/sandbox.module';
 import { YamlSenderModule } from './yaml-sender/yaml-sender.module';
 
@@ -23,6 +25,7 @@ import { SharedModule } from '~/shared/shared.module';
     SharedModule,
     SandboxModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [
     SchemaClient,

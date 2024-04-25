@@ -1,16 +1,15 @@
 FROM node:21.7-alpine3.18 AS base
 WORKDIR /app/client
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS client-build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.18 AS client-build
+RUN apk add --upgrade --no-cache \
+        nodejs \
+        npm &&\
+    npm install -g --silent nswag@14.0.7
 
 WORKDIR /app
 COPY --from=battery-devices-master-server /docs/api /docs/api
-COPY ["clientgen.nswag", "./"]
-
-RUN apt update &&\
-    apt -y install nodejs &&\
-    apt -y install npm &&\
-    npm install -g --silent nswag@14.0.7
+COPY ["docs/settings/clientgen.nswag", "./"]
 
 RUN nswag run clientgen.nswag
 

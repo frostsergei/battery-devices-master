@@ -1,7 +1,12 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine3.18 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.18 AS build
+RUN apk add --upgrade --no-cache \
+        nodejs \
+        npm &&\
+    npm install -g --silent nswag@14.0.7
+
 ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
@@ -10,14 +15,9 @@ COPY ["server/server.csproj", "server/"]
 RUN dotnet restore "server/server.csproj"
 
 COPY ["server/", "server/"]
-COPY ["apigen.nswag", "BatteryDevicesMaster.sln", "./"]
+COPY ["docs/settings/apigen.nswag", "BatteryDevicesMaster.sln", "./"]
 
 RUN dotnet build "server/server.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-RUN apt update &&\
-    apt -y install nodejs &&\
-    apt -y install npm &&\
-    npm install -g --silent nswag@14.0.7 
 
 RUN nswag run apigen.nswag &&\
     sed 's/\\n[[:space:]]*"/"/g' /docs/api/api.yaml > /docs/api/api.g.yaml &&\
@@ -29,8 +29,8 @@ RUN dotnet publish "server/server.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 
 FROM base AS final
 
-RUN apt update&&\
-    apt -y install curl
+RUN apk add --upgrade --no-cache \
+        curl
 
 WORKDIR /app
 COPY --from=publish /app/publish .

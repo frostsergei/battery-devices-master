@@ -40,15 +40,15 @@ public class SchemaController : ControllerBase
     /// <response code="404">File not found</response>
     /// <response code="500">Internal server error</response>
     [HttpGet]
-    [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public IActionResult Get([FromQuery] string fileName)
+    public async Task<ActionResult<object>> Get([FromQuery] string fileName)
     {
         try
         {
-            // TODO(purposelessness): call SchemaSerializer.ReadSchema and return schema
-            return StatusCode(501, new ErrorResponse { Message = "Not implemented yet" });
+            var result = await _schemaSerializer.ReadSchema(fileName);
+            return result;
         }
         catch (FileNotFoundException ex)
         {

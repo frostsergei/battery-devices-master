@@ -1,0 +1,21 @@
+﻿parameters:
+  - name: T_0
+    description: тест0тест
+    type: decimal
+  - name: С_{i}
+    description: Цена импульса датчика объёма.
+    type: decimal
+    precision: 6
+    min: 1.{i}
+    max: 9.999999
+    for: 1:6:1
+  - name: T_1
+    description: тест1тест
+    type: decimal
+  - name: F_{i}
+    description: F
+    type: decimal
+    precision: 6
+    min: 2.{i}
+    max: 9.999999
+    for: 2:8:1

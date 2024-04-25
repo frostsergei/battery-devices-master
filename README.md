@@ -1,13 +1,15 @@
 # battery-devices-master
 
-## Setup Instruction
+## Setup
 
-1. Install docker.
+1. Install docker. <br/>
    Installation instructions [can be found here](https://docs.docker.com/desktop)
-2. Run docker containers:
+2. Run docker containers: <br/>
   `docker compose up`
 
-Server starts on localhost:7200 and client on localhost:4200.
+Server starts on http://localhost:7200
+
+Client starts on http://localhost:4200
 
 ## Итерация 2
 

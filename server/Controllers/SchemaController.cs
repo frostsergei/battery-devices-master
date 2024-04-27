@@ -139,12 +139,17 @@ public class SchemaController : ControllerBase
     {
         try
         {
-            var fileStream = System.IO.File.OpenRead(Path.Combine("docs", "schemas", "parameters.yaml"));
+            var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
+                                   throw new InvalidOperationException("SchemasDirectory is null");
+            var parameterFilename = _configuration.GetValue<string>("YamlParametersFileName") ??
+                                    throw new InvalidOperationException("YamlParametersFileName is null");
+            var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory, parameterFilename));
             return new FileStreamResult(fileStream, "application/octet-stream");
         }
         catch (FileNotFoundException ex)
         {
-            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse() { Message = $"Error getting parameters: {ex.Message}" });
+            return StatusCode(StatusCodes.Status404NotFound,
+                new ErrorResponse() { Message = $"Error getting parameters: {ex.Message}" });
         }
         catch (Exception ex)
         {

@@ -29,7 +29,7 @@ public class SchemaSerializer
     /// <param name="fileName">Name of file in schemas directory</param>
     /// <exception cref="InvalidOperationException">Server configuration is incomplete</exception>
     /// <exception cref="FileNotFoundException">Directory/file not found</exception>
-    public async Task<object> ReadSchema(string fileName)
+    public Task<object> ReadSchema(string fileName)
     {
         var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
                                throw new InvalidOperationException("SchemasDirectory is null");
@@ -39,7 +39,7 @@ public class SchemaSerializer
             throw new FileNotFoundException($"{fileName} not found in {schemasDirectory}");
         }
         var obj = this._parameterSchemaParser.Read(filePath);
-        return obj;
+        return Task.FromResult(obj);
     }
 
     /// <summary>

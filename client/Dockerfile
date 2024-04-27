@@ -1,6 +1,9 @@
 FROM node:20-alpine3.18 AS base
 WORKDIR /app/client
 
+RUN apk add --upgrade --no-cache \
+        curl
+
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.18 AS client-build
 RUN apk add --upgrade --no-cache \
         nodejs \

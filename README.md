@@ -1,19 +1,13 @@
 # battery-devices-master
 
-## Setup Instruction
+## Setup
 
-1. Install Node.js. <br/>
-   Installation instructions can be found here: https://nodejs.org/en/download
-2. Install nswag — automatic code generation tool. <br/>
-   `npm install nswag@14.0.3 -g`
-3. Restore NuGet packages. <br/>
-   `dotnet restore`
-4. Install client dependencies. <br/>
-   `cd client; npm i; cd ..`
-5. Build project. <br/>
-   `make` (Unix) <br/> OR <br/> `nswag run apigen.nswag` and `nswag run clientgen.nswag` (Windows)
-6. Run application. <br/>
-   `./run` (Unix) <br/> OR <br/> `dotnet run --project server -lp https`
+1. Install docker. <br/>
+   Installation instructions [can be found here](https://docs.docker.com/desktop).
+2. Run docker containers: <br/>
+  `docker compose up`
+3. App starts on http://localhost:80 <br/>
+   **The application only works when the docker is turned on.**
 
 ## Итерация 2
 

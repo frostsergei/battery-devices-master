@@ -9,7 +9,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormComponent } from './form/form.component';
 import { FormGenDemoComponent } from './form-gen-demo/form-gen-demo.component';
 
-import { API_BASE_URL, SchemaClient } from '~/client';
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
@@ -23,10 +22,6 @@ import { SharedModule } from '~/shared/shared.module';
     MatInputModule,
     BrowserAnimationsModule,
     MatButtonModule,
-  ],
-  providers: [
-    SchemaClient,
-    { provide: API_BASE_URL, useValue: 'https://localhost:7155' },
   ],
 })
 export class SandboxModule {}

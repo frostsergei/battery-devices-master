@@ -1,0 +1,16 @@
+**/obj
+**/bin
+**/build
+**/node_modules
+**/dist
+**/Dockerfile
+**/.DS_Store
+.idea
+.git
+.github
+.dockerignore
+.env
+.gitignore
+.vscode
+docker-compose.yml
+README.md

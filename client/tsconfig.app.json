@@ -9,9 +9,9 @@
         "src/*",
         "src/app/*",
         "src/build/*"
-      ],
+      ]
     },
-    "types": [],
+    "types": []
   },
   "files": [
     "src/main.ts"

@@ -5,8 +5,8 @@
     "aspNetCoreToOpenApi": {
       "project": "server",
       "configuration": "$(Configuration)",
-      "workingDirectory": "server",
-      "output": "docs/api/api.yaml",
+      "workingDirectory": "/src/server",
+      "output": "/docs/api/api.yaml",
       "newLineBehavior": "LF"
     }
   }

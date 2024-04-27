@@ -1,0 +1,43 @@
+﻿services:
+  nginx-app:
+    container_name: battery-devices-master-nginx
+    image: battery-devices-master-nginx
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile
+    networks:
+      - app-net
+    ports:
+      - 80:80
+    restart: always
+
+  client-app:
+    container_name: battery-devices-master-client
+    image: battery-devices-master-client
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    networks:
+      - app-net
+    depends_on:
+      server-app:
+        condition: service_healthy
+
+  server-app:
+    container_name: battery-devices-master-server
+    image: battery-devices-master-server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    networks:
+      - app-net
+    volumes:
+      - ./docs:/docs
+    healthcheck:
+      test: curl -f http://server-app/api/ping
+      interval: 1s
+      timeout: 1s
+      retries: 30
+
+networks:
+  app-net:

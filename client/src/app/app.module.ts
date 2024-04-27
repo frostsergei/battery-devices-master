@@ -12,6 +12,7 @@ import { YamlSenderModule } from './yaml-sender/yaml-sender.module';
 import { AppRoutingModule } from '~/app-routing.module';
 import { AppComponent } from '~/app.component';
 import { API_BASE_URL, SchemaClient } from '~/client';
+import * as env from '~/env';
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
@@ -29,7 +30,7 @@ import { SharedModule } from '~/shared/shared.module';
   ],
   providers: [
     SchemaClient,
-    { provide: API_BASE_URL, useValue: 'https://localhost:7155' },
+    { provide: API_BASE_URL, useValue: env.API_BASE_URL },
   ],
   bootstrap: [AppComponent],
 })

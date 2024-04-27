@@ -3,7 +3,7 @@
   "defaultVariables": "Configuration=Debug",
   "documentGenerator": {
     "fromDocument": {
-      "url": "docs/api/api.yaml",
+      "url": "/docs/api/api.yaml",
       "output": null,
     }
   },
@@ -65,7 +65,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "client/src/build/client.ts",
+      "output": "/app/client/src/build/client.ts",
       "newLineBehavior": "LF"
     }
   }

@@ -3,13 +3,11 @@
 ## Setup
 
 1. Install docker. <br/>
-   Installation instructions [can be found here](https://docs.docker.com/desktop)
+   Installation instructions [can be found here](https://docs.docker.com/desktop).
 2. Run docker containers: <br/>
   `docker compose up`
-
-Server starts on http://localhost:7200
-
-Client starts on http://localhost:4200
+3. App starts on http://localhost:80 <br/>
+   **The application only works when the docker is turned on.**
 
 ## Итерация 2
 

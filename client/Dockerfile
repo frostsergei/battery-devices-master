@@ -13,16 +13,6 @@ COPY --from=battery-devices-master-server /docs/api /docs/api
 COPY ["docs/settings/clientgen.nswag", "./"]
 RUN nswag run clientgen.nswag
 
-ARG SERVER_IP=http://localhost
-ENV SERVER_IP=$SERVER_IP
-
-# Replace API_BASE_URL with server url
-WORKDIR /app/client/src
-COPY ["client/src/env.template.ts", "./"]
-RUN apk add --upgrade --no-cache \
-        envsubst
-RUN envsubst < env.template.ts > env.ts
-
 FROM base AS final
 
 WORKDIR /app/client

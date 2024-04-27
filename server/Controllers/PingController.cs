@@ -6,7 +6,7 @@ namespace BatteryDevicesMaster.Server.Controllers;
 ///     Controller for '/ping' path
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class PingController : ControllerBase
 {
     /// <summary>

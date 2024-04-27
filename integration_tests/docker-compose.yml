@@ -14,7 +14,7 @@ services:
         condition: service_healthy
 
   nginx-app:
-    container_name: battery-devices-master-nginx
+    container_name: battery-devices-master-nginx-test
     image: battery-devices-master-nginx
     build:
       context: ../nginx/
@@ -35,7 +35,7 @@ services:
         condition: service_healthy
 
   client-app:
-    container_name: battery-devices-master-client
+    container_name: battery-devices-master-client-test
     image: battery-devices-master-client
     build:
       context: ../.
@@ -52,7 +52,7 @@ services:
         condition: service_healthy
 
   server-app:
-    container_name: battery-devices-master-server
+    container_name: battery-devices-master-server-test
     image: battery-devices-master-server
     build:
       context: ../.

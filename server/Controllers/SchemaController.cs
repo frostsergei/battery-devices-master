@@ -40,15 +40,15 @@ public class SchemaController : ControllerBase
     /// <response code="404">File not found</response>
     /// <response code="500">Internal server error</response>
     [HttpGet]
-    [ProducesResponseType(typeof(JsonResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public IActionResult Get([FromQuery] string fileName)
+    public async Task<ActionResult<object>> Get([FromQuery] string fileName)
     {
         try
         {
-            // TODO(purposelessness): call SchemaSerializer.ReadSchema and return schema
-            return StatusCode(501, new ErrorResponse { Message = "Not implemented yet" });
+            var result = await _schemaSerializer.ReadSchema(fileName);
+            return result;
         }
         catch (FileNotFoundException ex)
         {
@@ -122,6 +122,34 @@ public class SchemaController : ControllerBase
         {
             _logger.LogError($"Error writing {fileName}: {ex.Message}");
             return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Get parameters file
+    /// </summary>
+    /// <response code="200">Request message</response>
+    /// <response code="400">Bad request</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet("parameters")]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public IActionResult GetParameters()
+    {
+        try
+        {
+            var fileStream = System.IO.File.OpenRead(Path.Combine("docs", "schemas", "parameters.yaml"));
+            return new FileStreamResult(fileStream, "application/octet-stream");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse() { Message = $"Error getting parameters: {ex.Message}" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error getting parameters: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error getting parameters: {ex.Message}" });
         }
     }
 

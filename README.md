@@ -14,3 +14,7 @@
 [Скринкаст работы приложения](https://drive.google.com/file/d/1P27lMn_53urH26l79JT_YdW_Vn4TxeT_/view?usp=sharing)
 
 [Презентация](https://docs.google.com/presentation/d/1HEqx0hy5rIVZiJH80dui4qmq9hYMK1HpA-GMuQUQEFE/edit?usp=sharing)
+
+## Итерация 3
+
+[Презентация](https://docs.google.com/presentation/d/1JTcXnAYFlqQk5t2yJsG_W4jq7CXrT6sY-PsZiJmsXQI/edit?usp=sharing)

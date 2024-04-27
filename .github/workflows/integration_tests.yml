@@ -1,0 +1,22 @@
+name: integration tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run integration tests
+        run: docker compose up --build --exit-code-from test-app
+        working-directory: ./integration_tests.yml
+

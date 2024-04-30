@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import { ToastrService } from 'ngx-toastr';
 
 import { ErrorResponse, Schema, SchemaClient } from '~/client';
+import { ModalInstructionsComponent } from '~/modal-instructions/modal-instructions.component';
+import { MarkdownLoaderService } from '~/services/MarkdownLoaderService';
 
 @Component({
   selector: 'app-yaml-sender',
@@ -18,6 +21,8 @@ export class YamlSenderComponent {
   constructor(
     private readonly schemaClient: SchemaClient,
     private toastr: ToastrService,
+    private readonly dialog: MatDialog,
+    private MarkdownLoaderService: MarkdownLoaderService,
   ) {}
 
   onReceiveValidYamlText(newText: string): void {
@@ -62,5 +67,21 @@ export class YamlSenderComponent {
         },
       });
     console.log(this.yamlParametersText);
+  }
+
+  openDialog(): void {
+    this.MarkdownLoaderService.loadMarkdown().subscribe(
+      (markdownContent: string) => {
+        const dialogRef = this.dialog.open(ModalInstructionsComponent, {
+          width: '80%',
+          height: '80%',
+          data: { markdownContent },
+        });
+
+        dialogRef.afterClosed().subscribe(() => {
+          console.log('The dialog was closed');
+        });
+      },
+    );
   }
 }

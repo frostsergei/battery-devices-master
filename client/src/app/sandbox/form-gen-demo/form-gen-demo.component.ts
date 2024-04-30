@@ -4,6 +4,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 
@@ -13,6 +14,7 @@ import * as yaml from 'js-yaml';
 import { Database, FileResponse, SchemaClient } from '~/client';
 import { CustomFormControl } from '~/shared/classes/CustomFormControl';
 import { InputType } from '~/shared/input/InputType';
+import { precisionValidator } from '~/shared/validators/precision';
 
 @Component({
   selector: 'app-form-gen-demo',
@@ -37,6 +39,7 @@ export class FormGenDemoComponent implements OnInit {
   getYamlFromFileGenerateForm() {
     this.SchemaClient.getParameters().subscribe({
       next: (fileResponse: FileResponse) => {
+        // @ts-ignore
         fileResponse.data.text().then((text) => {
           try {
             this.testData = yaml.load(text);
@@ -47,12 +50,15 @@ export class FormGenDemoComponent implements OnInit {
             dataArray.forEach((item: any) => {
               // eslint-disable-next-line
               if (item.hasOwnProperty('type')) {
+                const validators = [Validators.required];
+                this.addValidatorsBasedOnType(item, validators);
                 this.addFormControlBasedOnType(
                   item.type,
                   item.name,
                   item.description,
                   item.hint,
                   item.description,
+                  validators,
                 );
               }
             });
@@ -70,17 +76,60 @@ export class FormGenDemoComponent implements OnInit {
     });
   }
 
-  // TODO(go1vs1noob): there will be some logic (adding validators) based on "type" later
-  addFormControlBasedOnType(
+  // TODO(go1vs1noob): опять поправить линтер, надоело ограничение на any...
+  private addValidatorsBasedOnType(
+    item: any,
+    validators: ((
+      control: AbstractControl<any, any>,
+    ) => ValidationErrors | null)[],
+  ) {
+    switch (item.type) {
+      case 'string': {
+        if (item.hasOwnProperty('regex')) {
+          validators.push(Validators.pattern(item.regex));
+        }
+        break;
+      }
+      case 'integer': {
+        if (item.hasOwnProperty('min')) {
+          validators.push(Validators.min(item.min as number));
+        }
+        if (item.hasOwnProperty('max')) {
+          validators.push(Validators.max(item.max as number));
+        }
+        break;
+      }
+      case 'decimal': {
+        if (item.hasOwnProperty('min')) {
+          validators.push(Validators.min(item.min as number));
+        }
+        if (item.hasOwnProperty('max')) {
+          validators.push(Validators.max(item.max as number));
+        }
+        if (item.hasOwnProperty('precision')) {
+          validators.push(precisionValidator(item.precision as number));
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  private addFormControlBasedOnType(
     type: string,
     name: string,
     placeholder: string,
     hint: string,
     description: string,
+    validators: ((
+      control: AbstractControl<any, any>,
+    ) => ValidationErrors | null)[],
   ) {
     this.testForm.addControl(
       type + 'FieldInForm',
-      new CustomFormControl('', [Validators.required], [], {
+      new CustomFormControl('', validators, [], {
         type: type,
         name: name,
         placeholder: placeholder,

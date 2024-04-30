@@ -15,6 +15,7 @@ export class InputComponent {
   @Input() controlType: string = 'input';
   @Input() placeholder: string = '';
   @Input() hint: string = '';
+  debug: boolean = true;
   showHint: boolean = false;
 
   showErrors(): boolean {

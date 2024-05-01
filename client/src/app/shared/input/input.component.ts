@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { InputType } from './InputType';
+import { InputType } from './input-type';
 
 @Component({
   selector: 'app-input',
@@ -15,7 +15,7 @@ export class InputComponent {
   @Input() controlType: string = 'input';
   @Input() placeholder: string = '';
   @Input() hint: string = '';
-  debug: boolean = true;
+  debug: boolean = false;
   showHint: boolean = false;
 
   showErrors(): boolean {

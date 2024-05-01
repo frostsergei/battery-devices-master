@@ -1,6 +1,6 @@
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 
-export function precisionValidator(precision: number): ValidatorFn {
+export function PrecisionValidator(precision: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const regex = new RegExp(`^-?\\d+(\\.\\d{1,${precision}})?$`);
     if (

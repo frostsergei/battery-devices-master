@@ -6,14 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { FormComponent } from './form/form.component';
 import { FormGenDemoComponent } from './form-gen-demo/form-gen-demo.component';
 
 import { SharedModule } from '~/shared/shared.module';
 
 @NgModule({
-  declarations: [FormComponent, FormGenDemoComponent],
-  exports: [FormComponent, FormGenDemoComponent],
+  declarations: [FormGenDemoComponent],
+  exports: [FormGenDemoComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

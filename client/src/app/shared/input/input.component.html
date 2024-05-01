@@ -5,18 +5,24 @@
             placeholder="{{placeholder}}" />
         <mat-hint *ngIf="showHint && hint" align="start">{{hint}}</mat-hint>
         <ng-container *ngIf="showErrors()">
-            <mat-error *ngIf="control?.hasError('required')">Value of format {{inputType}} is required</mat-error>
-            <mat-error *ngIf="control?.hasError('minlength')">Value needs to be at least
+            <mat-error *ngIf="control?.hasError('required')">Введите значение типа {{inputType}}</mat-error>
+            <mat-error *ngIf="control?.hasError('minlength')">Значение должно быть длины минимум
                 {{control.errors?.['minlength'].requiredLength}}
-                characters</mat-error>
-            <mat-error *ngIf="control?.hasError('maxlength')">Value needs to be equal or less than
+                символов</mat-error>
+            <mat-error *ngIf="control?.hasError('maxlength')">Значение должно быть длины менее
                 {{control.errors?.['maxlength']?.requiredLength}}
-                characters</mat-error>
-            <mat-error *ngIf="control?.hasError('pattern')">Format of input data is incorrect</mat-error>
+                символов</mat-error>
+            <mat-error *ngIf="control?.hasError('min')">Минимальное допустимое значение: {{control.errors?.min['min']}}</mat-error>
+            <mat-error *ngIf="control?.hasError('max')">Максимальное допустимое значение: {{control.errors?.max['max']}}</mat-error>
+            <mat-error *ngIf="control?.hasError('pattern')">Формат некорректен. Нужный формат: {{control.errors?.pattern['requiredPattern']}}</mat-error>
         </ng-container>
     </mat-form-field>
         <button mat-icon-button color="secondary" (click)="toggleHint();"
                 PreventDefaultStopPropagation>
             <mat-icon>help</mat-icon>
         </button>
+</div>
+
+<div *ngIf="debug === true">
+    {{control.errors | json}}
 </div>

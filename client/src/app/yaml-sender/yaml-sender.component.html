@@ -5,7 +5,9 @@
                 <option value="parameters">Схема параметров</option>
             </select>
         </div>
-
+    <div class="mb-3">
+        <button class="btn btn-outline-light w-350px" mat-raised-button (click)="openDialog()">Описание структуры конфигурационных файлов</button>
+    </div>
     <app-yaml-editor (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
     </div>
 </div>

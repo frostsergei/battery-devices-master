@@ -236,9 +236,9 @@ public class SchemaController : ControllerBase
     /// <response code="200">Возвращает данные всех файлов в директории в виде JSON объекта.</response>
     /// <response code="404">Если директория не существует.</response>
     [HttpGet("schemas")]
-    [ProducesResponseType(typeof(List<ParametersSchema>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Schemas), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public ActionResult<object> GetSchemas()
+    public ActionResult<Schemas> GetSchemas()
     {
         var filesData = _presetsSchemasReader.ReadFiles(_configuration.
             GetValue<string>("ParametersSchemasPath"));
@@ -250,8 +250,22 @@ public class SchemaController : ControllerBase
                 $"No files in {Path.GetFullPath(_configuration.GetValue<string>("ParametersSchemasPath"))}"
             });
 
-        return Ok(filesData);
+        Console.WriteLine(filesData.ToArray());
+        return Ok(new Schemas { Content = filesData.ToArray() });
     }
+}
+
+
+/// <summary>
+///     Yaml configuration request body
+/// </summary>
+public struct Schemas
+{
+    /// <summary>
+    ///     Yaml configuration message
+    /// </summary>
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Content must not be empty")]
+    public ParametersSchema[] Content { get; set; }
 }
 
 /// <summary>

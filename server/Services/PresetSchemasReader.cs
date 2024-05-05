@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using BatteryDevicesMaster.Server.Models;
 
 namespace BatteryDevicesMaster.Server.Services;
 
 public class PresetSchemasReader
 {
-    public Dictionary<string, string> ReadFiles(string directoryPath)
+    public List<ParametersSchema> ReadFiles(string directoryPath)
     {
-        var filesData = new Dictionary<string, string>();
+        var filesData = new List<ParametersSchema>();
 
         if (Directory.Exists(directoryPath))
         {
@@ -17,7 +16,12 @@ public class PresetSchemasReader
             {
                 var fileName = Path.GetFileName(file);
                 var fileData = File.ReadAllText(file);
-                filesData.Add(fileName, fileData);
+
+                filesData.Add(new ParametersSchema
+                {
+                    FileName = fileName,
+                    FileData = fileData
+                });
             }
             return filesData;
         }

@@ -236,7 +236,7 @@ public class SchemaController : ControllerBase
     /// <response code="200">Возвращает данные всех файлов в директории в виде JSON объекта.</response>
     /// <response code="404">Если директория не существует.</response>
     [HttpGet("schemas")]
-    [ProducesResponseType(typeof(Schemas), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<ParametersSchema>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public ActionResult<object> GetSchemas()
     {
@@ -250,7 +250,7 @@ public class SchemaController : ControllerBase
                 $"No files in {Path.GetFullPath(_configuration.GetValue<string>("ParametersSchemasPath"))}"
             });
 
-        return Ok(new Schemas { Content = JsonConvert.SerializeObject(filesData) });
+        return Ok(filesData);
     }
 }
 
@@ -278,13 +278,3 @@ public struct Database
     public string Content { get; set; }
 }
 
-/// <summary>
-///     Schemas request body
-/// </summary>
-public struct Schemas
-{
-    /// <summary>
-    ///     JSON with schemas name and data
-    /// </summary>
-    public string Content { get; set; }
-}

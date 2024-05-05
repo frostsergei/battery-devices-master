@@ -244,8 +244,11 @@ public class SchemaController : ControllerBase
             GetValue<string>("ParametersSchemasPath"));
 
         if (filesData == null)
-            return StatusCode(404, new ErrorResponse { Message = 
-                $"No files in {Path.GetFullPath(_configuration.GetValue<string>("ParametersSchemasPath"))}" });
+            return StatusCode(404, new ErrorResponse
+            {
+                Message =
+                $"No files in {Path.GetFullPath(_configuration.GetValue<string>("ParametersSchemasPath"))}"
+            });
 
         return Ok(new Schemas { Content = JsonConvert.SerializeObject(filesData) });
     }

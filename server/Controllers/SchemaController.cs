@@ -17,6 +17,7 @@ public class SchemaController : ControllerBase
     private readonly XmlSerializer _xmlSerializer;
     private readonly SchemaSerializer _schemaSerializer;
     private readonly ILogger<SchemaController> _logger;
+    private readonly PresetSchemasReader _presetsSchemasReader;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SchemaController"/> class.
@@ -25,12 +26,14 @@ public class SchemaController : ControllerBase
         IConfiguration configuration,
         SchemaSerializer schemaSerializer,
         XmlSerializer xmlSerializer,
-        ILogger<SchemaController> logger)
+        ILogger<SchemaController> logger,
+        PresetSchemasReader presetsSchemaReader)
     {
         _configuration = configuration;
         _schemaSerializer = schemaSerializer;
         _xmlSerializer = xmlSerializer;
         _logger = logger;
+        _presetsSchemasReader = presetsSchemaReader;
     }
 
     /// <summary>
@@ -226,6 +229,25 @@ public class SchemaController : ControllerBase
         };
         return new JsonResult(dummySchema);
     }
+
+    /// <summary>
+    /// Получить данные всех файлов в директории.
+    /// </summary>
+    /// <response code="200">Возвращает данные всех файлов в директории в виде JSON объекта.</response>
+    /// <response code="404">Если директория не существует.</response>
+    [HttpGet("schemas")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    public ActionResult<object> GetSchemas()
+    {
+        var filesData = _presetsSchemasReader.ReadFiles(_configuration.
+            GetValue<string>("ParametersSchemasPath"));
+
+        if (filesData == null)
+            return NotFound("Directory not found");
+
+        return Ok(new Schemas { Content = JsonConvert.SerializeObject(filesData) });
+    }
 }
 
 /// <summary>
@@ -249,5 +271,16 @@ public struct Database
     ///     Message with JSON form
     /// </summary>
     [Required(AllowEmptyStrings = false, ErrorMessage = "Content must not be empty")]
+    public string Content { get; set; }
+}
+
+/// <summary>
+///     Schemas request body
+/// </summary>
+public struct Schemas
+{
+    /// <summary>
+    ///     JSON with schemas name and data
+    /// </summary>
     public string Content { get; set; }
 }

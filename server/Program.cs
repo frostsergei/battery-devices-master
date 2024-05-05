@@ -59,6 +59,7 @@ WebApplicationBuilder CreateBuilder()
     builder.Services.AddSingleton<SchemaSerializer>();
     builder.Services.AddSingleton<XmlSerializer>();
     builder.Services.AddSingleton<ParameterSchemaParser>();
+    builder.Services.AddSingleton<PresetSchemasReader>();
 
 
     return builder;

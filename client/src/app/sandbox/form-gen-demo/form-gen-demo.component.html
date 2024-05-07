@@ -1,6 +1,6 @@
+<app-schema-selector (fileDataEmitter)="handleFileData($event)"></app-schema-selector>
 <div class="container p-3 col-6 rounded-2 border border-white">
     <form (submit)="onSubmit()" [formGroup]="testForm" *ngIf="!schemaFileEmpty">
-        
         <ng-container *ngFor="let controlName of getControlNames()" >
             <div class="row">    
             <app-input 

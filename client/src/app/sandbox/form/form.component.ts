@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { InputType } from '~/shared/input/InputType';
+import { InputType } from '~/shared/input/input-type';
 
 @Component({
   selector: 'app-form',

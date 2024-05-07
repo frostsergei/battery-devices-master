@@ -1,0 +1,3 @@
+<select [(ngModel)]="selectedSchema" (change)="onSelectionChange()" class="form-select mb-3 w-100">
+    <option *ngFor="let schema of schemas" [ngValue]="schema">{{ schema.fileName }}</option>
+</select>

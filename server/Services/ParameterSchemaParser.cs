@@ -2,10 +2,9 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-
 namespace BatteryDevicesMaster.Server.Services;
 
-using ParameterObject = Dictionary<object, object>;
+using ParameterObject = Dictionary<string, object>;
 using ParameterObjectDictionary = Dictionary<string, Dictionary<string, object>>;
 
 public enum ParameterSchemaLevel
@@ -58,78 +57,17 @@ public class ParameterSchemaParser
 
 
         ParameterSchemaValidator.TopLevel(yamlObject, out var parameters, out var templates);
-        // TODO(go1vs1noob): call method to open 'templates' here
-        OpenForCycles(parameters);
+        Parameter.OpenTemplates(parameters, templates);
+        Parameter.OpenForCycles(parameters);
 
         return yamlObject;
     }
-
-    // TODO(go1vs1noob): this algo of opening "for" cycles is not in-place yet. do we need to fix it?
-    // TODO(go1vs1noob): we have issues if field in parameter looks like this: "min: {i}". {i} after casting is a dictionary {i: } and not a string "{i}"
-    // TODO(go1vs1noob): add support for arithmetic operations with 'i'
-    private void OpenForCycles(List<object> parameters)
-    {
-        const string ForKey = "for";
-        const string ForSeparator = ":";
-        const string IndexerVariable = "{i}";
-
-        var openedParametersToInclude = new List<ParameterObject>();
-        var indexedParametersToRemove = new List<ParameterObject>();
-        foreach (var parameter in parameters)
-        {
-            var schemaParameter = parameter as ParameterObject ?? throw new ParameterSchemaParsingException("", ParameterSchemaLevel.Parameter);
-            if (!schemaParameter.ContainsKey(ForKey))
-            {
-                continue;
-            }
-            ProcessParameterContainingForCycle(schemaParameter);
-        }
-        SwapIndexedParametersToOpenedParameters();
-
-
-        void ProcessParameterContainingForCycle(ParameterObject schemaParameter)
-        {
-            indexedParametersToRemove.Add(schemaParameter);
-
-            string[] forCycleParts = (schemaParameter[ForKey] as string
-                                      ?? throw new ParameterSchemaParsingException("'for' key must contain value of type 'string'", ParameterSchemaLevel.Parameter))
-                                      .Split(ForSeparator);
-            int start = int.Parse(forCycleParts[0]);
-            int stop = int.Parse(forCycleParts[1]);
-            int step = int.Parse(forCycleParts[2]);
-
-            for (int i = start; i < stop + 1; i += step)
-            {
-                var openedParameter = new ParameterObject();
-                foreach (var (key, value) in schemaParameter)
-                {
-                    if (value.ToString().Contains(IndexerVariable))
-                    {
-                        openedParameter.Add(key, value.ToString().Replace(IndexerVariable, i.ToString()));
-                    }
-                    else
-                    {
-                        openedParameter.Add(key, value);
-                    }
-                }
-                openedParametersToInclude.Add(openedParameter);
-            }
-        }
-        void SwapIndexedParametersToOpenedParameters()
-        {
-            parameters.AddRange(openedParametersToInclude);
-            foreach (var indexedParameter in indexedParametersToRemove)
-            {
-                parameters.Remove(indexedParameter);
-            }
-        }
-    }
-
 }
 
 public static class ParameterSchemaValidator
 {
-    public static void TopLevel(object yamlObject, out List<object> parameters, out List<object> templates)
+    public static void TopLevel(object yamlObject, out List<ParameterObject> parameters,
+        out List<ParameterObject> templates)
     {
         // TODO(go1vs1noob): this throws an exception if we try to parse to Dictionary<string, object>. Is this related to issue 74? 
         var yamlDict = yamlObject as Dictionary<object, object> ??
@@ -154,37 +92,27 @@ public static class ParameterSchemaValidator
                     ParameterSchemaLevel.Base);
         }
 
-        parameters = yamlDict[ParameterSchemaHelpers.ParametersKey] as List<object> ??
+        parameters = yamlDict[ParameterSchemaHelpers.ParametersKey] as List<ParameterObject> ??
                      throw new ParameterSchemaParsingException(
                          "Invalid 'parameters' section in the YAML file. It must be a list",
                          ParameterSchemaLevel.Parameters);
-        templates = new List<object>();
+        templates = new List<ParameterObject>();
 
         if (yamlDict.TryGetValue(ParameterSchemaHelpers.TemplatesKey, out var templateList))
         {
-            templates = templateList as List<object> ??
+            templates = templateList as List<ParameterObject> ??
                         throw new ParameterSchemaParsingException(
                             "Invalid 'templates' section in the YAML file. It must be a list",
                             ParameterSchemaLevel.Templates);
         }
     }
 
-    public static void Templates(List<object> templatesList, out ParameterObjectDictionary templates)
-    {
-        templates = new ParameterObjectDictionary();
-    }
-
-    public static void Parameters(List<object> parametersList, out ParameterObjectDictionary parameters)
+    public static void Parameters(List<ParameterObject> parametersList, out ParameterObjectDictionary parameters)
     {
         parameters = new ParameterObjectDictionary();
 
-        foreach (var parameterObj in parametersList)
+        foreach (var parameter in parametersList)
         {
-            var parameter = parameterObj as Dictionary<string, object> ??
-                            throw new ParameterSchemaParsingException(
-                                "Invalid parameter in the 'parameters' section. It must be a dictionary",
-                                ParameterSchemaLevel.Parameter);
-
             _ = Parameter.GetName(parameter);
             Parameter.Validate(parameter, parameters);
         }

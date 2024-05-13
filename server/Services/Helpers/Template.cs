@@ -90,9 +90,6 @@ public partial class Parameter
                             throw new ParameterSchemaParsingException("cannot convert tValue to string",
                                 ParameterSchemaLevel.Templates);
 
-            // var tValueStr = tValue as string ??
-            //                 throw new ParameterSchemaParsingException("cannot convert tValue to string",
-            //                     ParameterSchemaLevel.Templates);
             parameter[key] = ReplaceTemplateArgs(tValueStr, templateArgs);
         }
     }

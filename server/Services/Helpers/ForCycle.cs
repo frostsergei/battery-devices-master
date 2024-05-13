@@ -1,3 +1,6 @@
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
 using ParameterObject = Dictionary<string, object>;
@@ -51,9 +54,14 @@ public static partial class Parameter
                 var openedParameter = new ParameterObject();
                 foreach (var (key, value) in schemaParameter)
                 {
-                    var valueString = value.ToString() ??
+                    var serializer = new SerializerBuilder()
+                        .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                        .Build();
+
+                    var valueString = serializer.Serialize(value) ??
                                       throw new ParameterSchemaParsingException("Cannot convert value to string",
                                           ParameterSchemaLevel.Parameter);
+
                     openedParameter.Add(key,
                         valueString.Contains(indexerVariable)
                             ? valueString.Replace(indexerVariable, i.ToString())

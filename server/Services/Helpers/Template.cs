@@ -32,7 +32,7 @@ public partial class Parameter
         return templateMap;
     }
 
-    private static string ReplaceTemplateArgs(string value, string[] args)
+    private static object ReplaceTemplateArgs(string value, string[] args)
     {
         Regex regex = new(@"\$(\d+)");
         var matches = regex.Matches(value);
@@ -51,7 +51,15 @@ public partial class Parameter
             value = Regex.Replace(value, $@"\${index}", args[index]);
         }
 
-        return value;
+        var builder = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+
+        var objValue = builder.Deserialize(new StringReader(value)) ??
+                       throw new ParameterSchemaParsingException(
+                           "cannot convert value to object", ParameterSchemaLevel.Templates);
+
+        return objValue;
     }
 
     private static void FillParameterWithTemplate(ParameterObject parameter, ParameterObjectDictionary templateMap)

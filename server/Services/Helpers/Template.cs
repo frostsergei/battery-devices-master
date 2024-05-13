@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
@@ -80,9 +82,17 @@ public partial class Parameter
                 continue;
             }
 
-            var tValueStr = tValue as string ??
-                            throw new ParameterSchemaParsingException("cannot convert tValue to string",
+            var serializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            
+            var tValueStr = serializer.Serialize(tValue) ?? 
+                            throw new ParameterSchemaParsingException("cannot convert tValue to string", 
                                 ParameterSchemaLevel.Templates);
+            
+            // var tValueStr = tValue as string ??
+            //                 throw new ParameterSchemaParsingException("cannot convert tValue to string",
+            //                     ParameterSchemaLevel.Templates);
             parameter[key] = ReplaceTemplateArgs(tValueStr, templateArgs);
         }
     }

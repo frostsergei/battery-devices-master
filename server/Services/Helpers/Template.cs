@@ -85,11 +85,11 @@ public partial class Parameter
             var serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
-            
-            var tValueStr = serializer.Serialize(tValue) ?? 
-                            throw new ParameterSchemaParsingException("cannot convert tValue to string", 
+
+            var tValueStr = serializer.Serialize(tValue) ??
+                            throw new ParameterSchemaParsingException("cannot convert tValue to string",
                                 ParameterSchemaLevel.Templates);
-            
+
             // var tValueStr = tValue as string ??
             //                 throw new ParameterSchemaParsingException("cannot convert tValue to string",
             //                     ParameterSchemaLevel.Templates);

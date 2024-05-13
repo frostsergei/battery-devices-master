@@ -91,9 +91,9 @@ public static class ParameterSchemaValidator
                     "Too many keys in the YAML file. Only 'parameters' and 'templates' keys are allowed",
                     ParameterSchemaLevel.Base);
         }
-        
+
         Console.WriteLine(yamlDict[ParameterSchemaHelpers.ParametersKey].ToString());
-        
+
         Console.WriteLine(yamlDict[ParameterSchemaHelpers.ParametersKey].GetType());
         parameters = yamlDict[ParameterSchemaHelpers.ParametersKey] as List<ParameterObject> ??
                      throw new ParameterSchemaParsingException(

@@ -25,6 +25,8 @@ export class FormGenDemoComponent {
   testData: any;
   testForm: FormGroup = new FormGroup({});
   schemaFileEmpty: boolean = true;
+  tabs: any[] = [];
+
   constructor(private readonly SchemaClient: SchemaClient) {}
 
   private tryLoadParametersFromString(text: string) {
@@ -32,8 +34,24 @@ export class FormGenDemoComponent {
       this.testData = yaml.load(text);
       const parametersArray = Array.isArray(this.testData.parameters)
         ? this.testData.parameters
-        : [this.testData.parameters];
-      console.log('here');
+        : null;
+      const windowsArray = Array.isArray(this.testData.windows)
+        ? this.testData.windows
+        : null;
+      if (parametersArray === null) {
+        throw Error('Отсутствует вкладка параметров');
+      }
+      if (windowsArray === null) {
+        this.tabs = [
+          {
+            name: 'Все параметры',
+            description: 'Все параметры в одной вкладке',
+            parameters: parametersArray.map((parameter: any) => parameter.name),
+          },
+        ];
+      } else {
+        this.tabs = windowsArray[1].tabs;
+      }
       this.testForm.reset();
       this.testForm = new FormGroup({});
       parametersArray.forEach((parameter: any) => {
@@ -112,7 +130,7 @@ export class FormGenDemoComponent {
     ) => ValidationErrors | null)[],
   ) {
     this.testForm.addControl(
-      type + 'FieldInForm',
+      name,
       new CustomFormControl('', validators, [], {
         type: type,
         name: name,
@@ -123,11 +141,11 @@ export class FormGenDemoComponent {
     );
   }
 
-  // TODO(go1vs1noob): move it closer to InputType, maybe in the same file
   getInputType(inputType: string): InputType {
     const returnValue: InputType | undefined =
       InputType[inputType as keyof typeof InputType];
     if (returnValue === undefined) {
+      this.schemaFileEmpty = true;
       throw TypeError(
         `Incorrect enum type: ${inputType}. See InputType.ts for possible values`,
       );
@@ -154,11 +172,10 @@ export class FormGenDemoComponent {
     });
   }
 
-  // TODO(go1vs1noob): make it more generic later
   getJsonForServer(form: FormGroup): any {
     const formData: any = {
       TagList: {
-        '@TargetDevice': 'TSPT941_20',
+        '@TargetDevice': 'SPT944',
         '@Id': '90253',
         '@SerialNumber': '',
         Channel: {
@@ -192,13 +209,16 @@ export class FormGenDemoComponent {
     return Object.keys(this.testForm.controls);
   }
 
-  // TODO(go1vs1noob): convert this to pipe later
+  getControlsByTab(tabName: string): string[] {
+    const tab = this.tabs.find((t) => t.name === tabName);
+    return tab ? tab.parameters : [];
+  }
+
   toControl(absCtrl: AbstractControl | null): FormControl {
     const ctrl = absCtrl as FormControl;
     return ctrl;
   }
 
-  // TODO(go1vs1noob): convert this to pipe later
   toCustomControl(absCtrl: AbstractControl | null): CustomFormControl {
     const ctrl = absCtrl as CustomFormControl;
     return ctrl;

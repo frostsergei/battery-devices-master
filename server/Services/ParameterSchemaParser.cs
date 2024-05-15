@@ -52,7 +52,7 @@ public class ParameterSchemaParser
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 
-        var yamlObject = builder.Deserialize(new StringReader(File.ReadAllText(filePath))) ??
+        var yamlObject = builder.Deserialize<Dictionary<string, List<ParameterObject>>>(new StringReader(File.ReadAllText(filePath))) ??
                          throw new ParameterSchemaParsingException("YAML file is empty", ParameterSchemaLevel.Base);
 
 
@@ -69,8 +69,7 @@ public static class ParameterSchemaValidator
     public static void TopLevel(object yamlObject, out List<ParameterObject> parameters,
         out List<ParameterObject> templates)
     {
-        // TODO(go1vs1noob): this throws an exception if we try to parse to Dictionary<string, object>. Is this related to issue 74? 
-        var yamlDict = yamlObject as Dictionary<object, object> ??
+        var yamlDict = yamlObject as Dictionary<string, List<Dictionary<string, object>>> ??
                        throw new ParameterSchemaParsingException("YAML file is not a dictionary",
                            ParameterSchemaLevel.Base);
 
@@ -92,6 +91,9 @@ public static class ParameterSchemaValidator
                     ParameterSchemaLevel.Base);
         }
 
+        Console.WriteLine(yamlDict[ParameterSchemaHelpers.ParametersKey].ToString());
+
+        Console.WriteLine(yamlDict[ParameterSchemaHelpers.ParametersKey].GetType());
         parameters = yamlDict[ParameterSchemaHelpers.ParametersKey] as List<ParameterObject> ??
                      throw new ParameterSchemaParsingException(
                          "Invalid 'parameters' section in the YAML file. It must be a list",

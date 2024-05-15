@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace BatteryDevicesMaster.Server.Services.Helpers;
 
@@ -30,7 +32,7 @@ public partial class Parameter
         return templateMap;
     }
 
-    private static string ReplaceTemplateArgs(string value, string[] args)
+    private static object ReplaceTemplateArgs(string value, string[] args)
     {
         Regex regex = new(@"\$(\d+)");
         var matches = regex.Matches(value);
@@ -49,7 +51,15 @@ public partial class Parameter
             value = Regex.Replace(value, $@"\${index}", args[index]);
         }
 
-        return value;
+        var builder = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+
+        var objValue = builder.Deserialize(new StringReader(value)) ??
+                       throw new ParameterSchemaParsingException(
+                           "cannot convert value to object", ParameterSchemaLevel.Templates);
+
+        return objValue;
     }
 
     private static void FillParameterWithTemplate(ParameterObject parameter, ParameterObjectDictionary templateMap)
@@ -80,9 +90,14 @@ public partial class Parameter
                 continue;
             }
 
-            var tValueStr = tValue as string ??
+            var serializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+
+            var tValueStr = serializer.Serialize(tValue) ??
                             throw new ParameterSchemaParsingException("cannot convert tValue to string",
                                 ParameterSchemaLevel.Templates);
+
             parameter[key] = ReplaceTemplateArgs(tValueStr, templateArgs);
         }
     }

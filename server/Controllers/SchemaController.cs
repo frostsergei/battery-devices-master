@@ -240,17 +240,17 @@ public class SchemaController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public ActionResult<Schemas> GetSchemas()
     {
-        var parameterFilename = _configuration.GetValue<string>("YamlParametersFileName") ?? 
+        var parameterFilename = _configuration.GetValue<string>("YamlParametersFileName") ??
                                 throw new InvalidOperationException("YamlParametersFileName is null");
-        var formFilename = _configuration.GetValue<string>("YamlFormFileName") ?? 
+        var formFilename = _configuration.GetValue<string>("YamlFormFileName") ??
                            throw new InvalidOperationException("YamlFormFileName is null");
-        var directoryName = _configuration.GetValue<string>("SchemasDirectory") ?? 
+        var directoryName = _configuration.GetValue<string>("SchemasDirectory") ??
                             throw new InvalidOperationException("SchemasDirectory is null");
 
         try
         {
             var filesData = _presetsSchemasReader.ReadFiles(directoryName, parameterFilename, formFilename);
-            
+
             if (filesData == null)
                 return StatusCode(404, new ErrorResponse
                 {

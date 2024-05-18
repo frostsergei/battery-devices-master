@@ -144,9 +144,11 @@ public class SchemaController : ControllerBase
         {
             var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
                                    throw new InvalidOperationException("SchemasDirectory is null");
+            var customDirectory = _configuration.GetValue<string>("CustomSchemaDirectory") ??
+                                   throw new InvalidOperationException("SchemasDirectory is null");
             var parameterFilename = _configuration.GetValue<string>("YamlParametersFileName") ??
                                     throw new InvalidOperationException("YamlParametersFileName is null");
-            var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory, parameterFilename));
+            var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory,customDirectory, parameterFilename));
             return new FileStreamResult(fileStream, "application/octet-stream");
         }
         catch (FileNotFoundException ex)
@@ -192,6 +194,42 @@ public class SchemaController : ControllerBase
             return StatusCode(500, new ErrorResponse { Message = $"Error writing {fileName}: {ex.Message}" });
         }
     }
+
+     /// <summary>
+    /// Get form file
+    /// </summary>
+    /// <response code="200">Request message</response>
+    /// <response code="400">Bad request</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet("form")]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public IActionResult GetForm()
+    {
+        try
+        {
+            var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
+                                    throw new InvalidOperationException("SchemasDirectory is null");
+            var customDirectory = _configuration.GetValue<string>("CustomSchemaDirectory") ??
+                                    throw new InvalidOperationException("SchemasDirectory is null");
+            var formFilename = _configuration.GetValue<string>("YamlformFileName") ??
+                                    throw new InvalidOperationException("YamlformFileName is null");
+            var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory, customDirectory, formFilename));
+            return new FileStreamResult(fileStream, "application/octet-stream");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return StatusCode(StatusCodes.Status404NotFound,
+                new ErrorResponse() { Message = $"Error getting form: {ex.Message}" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error getting parameters: {ex.Message}");
+            return StatusCode(500, new ErrorResponse { Message = $"Error getting form: {ex.Message}" });
+        }
+    }
+
 
     /// <summary>
     ///      Returns dummy schema

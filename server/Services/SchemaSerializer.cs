@@ -31,7 +31,8 @@ public class SchemaSerializer
     /// <exception cref="FileNotFoundException">Directory/file not found</exception>
     public Task<object> ReadSchema(string fileName)
     {
-        var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
+        var schemasDirectory = Path.Combine(_configuration.GetValue<string>("SchemasDirectory"),
+         _configuration.GetValue<string>("CustomSchemaDirectory")) ??
                                throw new InvalidOperationException("SchemasDirectory is null");
         var filePath = Path.Combine(schemasDirectory, fileName);
         if (!Directory.Exists(schemasDirectory) || !File.Exists(filePath))
@@ -47,7 +48,10 @@ public class SchemaSerializer
     /// </summary>
     public async Task WriteSchema(string content, string fileName)
     {
-        string configDirectory = _configuration.GetValue<string>("SchemasDirectory");
+        string schemasDirectory = _configuration.GetValue<string>("SchemasDirectory");
+        string customDirectory = _configuration.GetValue<string>("CustomSchemaDirectory");
+        string configDirectory = Path.Combine(schemasDirectory, customDirectory);
+
         if (!Directory.Exists(configDirectory))
         {
             Directory.CreateDirectory(configDirectory);

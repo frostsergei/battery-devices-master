@@ -3,7 +3,9 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 
@@ -11,6 +13,8 @@ import { Ace, edit } from 'ace-builds';
 import Mode from 'ace-builds/src-noconflict/mode-yaml';
 import Theme from 'ace-builds/src-noconflict/theme-dracula';
 import * as yamlParser from 'js-yaml';
+
+import { FileResponse, SchemaClient } from '~/client';
 
 @Component({
   selector: 'app-yaml-editor',
@@ -22,8 +26,9 @@ export class YamlEditorComponent implements AfterViewInit {
   @Output() public textEmitter: EventEmitter<string> =
     new EventEmitter<string>();
 
+  @Input() public text: string = '';
+
   public isValid: boolean = false;
-  public text: string = '';
   public mode: string = 'yaml';
   public editor!: Ace.Editor;
   public options = {
@@ -35,8 +40,49 @@ export class YamlEditorComponent implements AfterViewInit {
     fontFamily: "'Roboto Mono Regular', monospace",
   };
 
+  constructor(private readonly schemaClient: SchemaClient) {}
+
+  ngOnInit(): void {
+    this.getParameters();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['text'] && this.editor) {
+      if (this.text === 'parameters') this.getParameters();
+      if (this.text === 'form') this.getForm();
+    }
+  }
+
   ngAfterViewInit(): void {
     this.initEditor();
+  }
+
+  private getParameters(): void {
+    this.schemaClient.getParameters().subscribe(
+      async (fileResponse: FileResponse) => {
+        this.text = await fileResponse.data.text();
+        if (this.editor) {
+          this.editor.setValue(this.text, -1);
+        }
+      },
+      (error: any) => {
+        console.error('Error loading initial content', error);
+      },
+    );
+  }
+
+  private getForm(): void {
+    this.schemaClient.getForm().subscribe(
+      async (fileResponse: FileResponse) => {
+        this.text = await fileResponse.data.text();
+        if (this.editor) {
+          this.editor.setValue(this.text, -1);
+        }
+      },
+      (error: any) => {
+        console.error('Error loading initial content', error);
+      },
+    );
   }
 
   private initEditor(): void {

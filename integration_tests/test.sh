@@ -26,7 +26,7 @@ else
   exit 1
 fi
 
-if [ -f /docs/schemas/parameters.yaml ]; then
+if [ -f /docs/schemas/custom/parameters.yaml ]; then
   echo "parameters.yaml exists test success"
 else
   echo "parameters.yaml not found"

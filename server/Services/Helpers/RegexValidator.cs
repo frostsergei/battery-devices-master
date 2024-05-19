@@ -41,11 +41,18 @@ public static partial class Parameter
 
         private static void ValidateRegexPattern(string pattern)
         {
+            var isValid = pattern.Trim().Length > 0;
+
             try
             {
-                _ = Regex.Match(string.Empty, pattern);
+                _ = new Regex(pattern);
             }
             catch (ArgumentException)
+            {
+                isValid = false;
+            }
+
+            if (!isValid)
             {
                 throw new ParameterSchemaParsingException(
                     $"'{pattern}' is not a valid regex.", ParameterSchemaLevel.Parameter);

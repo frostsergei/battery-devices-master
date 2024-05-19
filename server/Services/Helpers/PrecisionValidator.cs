@@ -18,9 +18,9 @@ public static partial class Parameter
             var type = Parameter.GetType(parameter);
             switch (type)
             {
-                case Type.Integer:
                 case Type.Decimal:
                     break;
+                case Type.Integer:
                 case Type.String:
                 case Type.Date:
                 case Type.Time:

@@ -18,7 +18,7 @@ public class PrecisionValidatorTest
             { Parameter.PrecisionKey, precision },
         };
     }
-    
+
     private static ParameterObject GetParameter(string type, double? precision)
     {
         return new ParameterObject

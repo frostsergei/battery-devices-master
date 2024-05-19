@@ -42,7 +42,7 @@ public static partial class Parameter
         private static void ValidateRegexPattern(string pattern)
         {
             var isValid = pattern.Trim().Length > 0;
-            
+
             try
             {
                 _ = new Regex(pattern);

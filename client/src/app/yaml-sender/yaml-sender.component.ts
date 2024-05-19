@@ -47,7 +47,6 @@ export class YamlSenderComponent {
         this.responseMessage = `Error: ${err.message}`;
       },
     });
-    console.log(this.yamlFormText);
   }
 
   sendYamlParameters(newText: string) {

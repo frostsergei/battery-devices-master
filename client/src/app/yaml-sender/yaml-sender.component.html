@@ -2,12 +2,13 @@
     <div class="col-8 row p-3 justify-content-center rounded-2  border border-white">
         <div class="col-5 min-width-100">
             <select [(ngModel)]="selectedFile" class="form-select mb-3 w-100">
-                <option value="parameters">Схема параметров</option>
+                <option value="parameters">Настройка параметров</option>
+                <option value="form">Настройка формы</option>
             </select>
         </div>
     <div class="mb-3">
         <button class="btn btn-outline-light w-350px" mat-raised-button (click)="openDialog()">Описание структуры конфигурационных файлов</button>
     </div>
-    <app-yaml-editor (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
+    <app-yaml-editor [text]="selectedFile" (textEmitter)="onReceiveValidYamlText($event)"></app-yaml-editor>
     </div>
 </div>

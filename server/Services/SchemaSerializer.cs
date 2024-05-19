@@ -32,11 +32,14 @@ public class SchemaSerializer
     public Task<object> ReadSchema(string fileName)
     {
         var schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
-                               throw new InvalidOperationException("SchemasDirectory is null");
-        var filePath = Path.Combine(schemasDirectory, fileName);
-        if (!Directory.Exists(schemasDirectory) || !File.Exists(filePath))
+                                   throw new InvalidOperationException("SchemasDirectory is null");
+        var customDirectory = _configuration.GetValue<string>("CustomSchemaDirectory") ??
+                                   throw new InvalidOperationException("CustomDirectory is null");
+        var fullDirectoryPath = Path.Combine(schemasDirectory, customDirectory);
+        var filePath = Path.Combine(fullDirectoryPath, fileName);
+        if (!Directory.Exists(fullDirectoryPath) || !File.Exists(filePath))
         {
-            throw new FileNotFoundException($"{fileName} not found in {schemasDirectory}");
+            throw new FileNotFoundException($"{fileName} not found in {fullDirectoryPath}");
         }
         var obj = this._parameterSchemaParser.Read(filePath);
         return Task.FromResult(obj);
@@ -47,7 +50,12 @@ public class SchemaSerializer
     /// </summary>
     public async Task WriteSchema(string content, string fileName)
     {
-        string configDirectory = _configuration.GetValue<string>("SchemasDirectory");
+        string schemasDirectory = _configuration.GetValue<string>("SchemasDirectory") ??
+                                   throw new InvalidOperationException("SchemasDirectory is null");
+        string customDirectory = _configuration.GetValue<string>("CustomSchemaDirectory") ??
+                                   throw new InvalidOperationException("CustomDirectory is null");
+        string configDirectory = Path.Combine(schemasDirectory, customDirectory);
+
         if (!Directory.Exists(configDirectory))
         {
             Directory.CreateDirectory(configDirectory);

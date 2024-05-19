@@ -60,13 +60,23 @@ public class AllOfValidatorTest
                     { "child", GetParameter("child", "array") },
                 }
             };
+            yield return new object[]
+            {
+                GetParameter("atomic-1", "integer"),
+                new ParameterObjectDict
+                {
+                    { "atomic-2", GetParameter("atomic-2", "array") },
+                }
+            };
         }
     }
+
 
     [Theory]
     [MemberData(nameof(HappyPathData))]
     public void Validate_HappyPath(ParameterObject parameter, ParameterObjectDict parameters)
     {
+        parameters.Add(Parameter.GetName(parameter), parameter);
         Parameter.Validator validator = new Parameter.AllOfValidator();
         validator.Validate(parameter, parameters);
     }
@@ -98,6 +108,7 @@ public class AllOfValidatorTest
     [MemberData(nameof(IncorrectTypeData))]
     public void Validate_IncorrectType(ParameterObject parameter, ParameterObjectDict parameters)
     {
+        parameters.Add(Parameter.GetName(parameter), parameter);
         Parameter.Validator validator = new Parameter.AllOfValidator();
         Assert.Throws<ParameterSchemaParsingException>(() => validator.Validate(parameter, parameters));
     }
@@ -133,6 +144,15 @@ public class AllOfValidatorTest
                     { "child", GetParameter("child", "array") },
                 }
             };
+            // No 'allOf' key
+            yield return new object[]
+            {
+                GetParameter("allOf-parent", "composite"),
+                new ParameterObjectDict
+                {
+                    { "child", GetParameter("child", "array") },
+                }
+            };
         }
     }
 
@@ -140,6 +160,7 @@ public class AllOfValidatorTest
     [MemberData(nameof(IncorrectAllOfData))]
     public void Validate_IncorrectAllOf(ParameterObject parameter, ParameterObjectDict parameters)
     {
+        parameters.Add(Parameter.GetName(parameter), parameter);
         Parameter.Validator validator = new Parameter.AllOfValidator();
         Assert.Throws<ParameterSchemaParsingException>(() => validator.Validate(parameter, parameters));
     }
@@ -188,6 +209,7 @@ public class AllOfValidatorTest
     [MemberData(nameof(IncorrectAllOfChildrenData))]
     public void Validate_IncorrectAllOfChildren(ParameterObject parameter, ParameterObjectDict parameters)
     {
+        parameters.Add(Parameter.GetName(parameter), parameter);
         Parameter.Validator validator = new Parameter.AllOfValidator();
         Assert.Throws<ParameterSchemaParsingException>(() => validator.Validate(parameter, parameters));
     }

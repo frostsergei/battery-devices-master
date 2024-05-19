@@ -1,0 +1,13 @@
+﻿windows:
+  - name: Конструктор окон
+  - tabs:
+      - name: Вкладка 1
+        description: Настройка основных параметров
+        parameters:
+          - ФОРМА1
+          - С_1
+      - name: Вкладка 2
+        description: Настройка дополнительных параметров
+        parameters:
+          - КВС
+          - ДО

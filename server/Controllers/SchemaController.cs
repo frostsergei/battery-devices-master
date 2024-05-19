@@ -240,18 +240,31 @@ public class SchemaController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public ActionResult<Schemas> GetSchemas()
     {
-        var filesData = _presetsSchemasReader.ReadFiles(_configuration.
-            GetValue<string>("ParametersSchemasPath"));
+        var parameterFilename = _configuration.GetValue<string>("YamlParametersFileName") ??
+                                throw new InvalidOperationException("YamlParametersFileName is null");
+        var formFilename = _configuration.GetValue<string>("YamlFormFileName") ??
+                           throw new InvalidOperationException("YamlFormFileName is null");
+        var directoryName = _configuration.GetValue<string>("SchemasDirectory") ??
+                            throw new InvalidOperationException("SchemasDirectory is null");
 
-        if (filesData == null)
-            return StatusCode(404, new ErrorResponse
-            {
-                Message =
-                $"No files in {Path.GetFullPath(_configuration.GetValue<string>("ParametersSchemasPath"))}"
-            });
+        try
+        {
+            var filesData = _presetsSchemasReader.ReadFiles(directoryName, parameterFilename, formFilename);
 
-        Console.WriteLine(filesData.ToArray());
-        return Ok(new Schemas { Content = filesData.ToArray() });
+            if (filesData == null)
+                return StatusCode(404, new ErrorResponse
+                {
+                    Message =
+                        $"No files in {Path.GetFullPath(_configuration.GetValue<string>("SchemasDirectory"))}"
+                });
+
+            Console.WriteLine(filesData.ToArray());
+            return Ok(new Schemas { Content = filesData.ToArray() });
+        }
+        catch (InvalidOperationException e)
+        {
+            return StatusCode(500, new ErrorResponse { Message = $"Error reading files: {e.Message}" });
+        }
     }
 }
 

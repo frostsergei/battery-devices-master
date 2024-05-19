@@ -20,11 +20,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dotnet-format tool
-        run: dotnet tool install -g dotnet-format
+      - name: Restore dotnet context
+        run: dotnet restore
         working-directory: ./server
 
-      - name: Run dotnet format
-        run: dotnet format server.csproj --verify-no-changes
+      - name: Run tests
+        run: dotnet test
         working-directory: ./server
 

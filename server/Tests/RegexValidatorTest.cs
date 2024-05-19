@@ -13,9 +13,9 @@ public class RegexValidatorTest
     {
         return new ParameterObject
         {
-            { "name", "regex-test" },
-            { "type", type },
-            { "regex", regex! },
+            { Parameter.NameKey, "regex-test" },
+            { Parameter.TypeKey, type },
+            { Parameter.RegexKey, regex! },
         };
     }
 

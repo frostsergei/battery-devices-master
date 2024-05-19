@@ -1,4 +1,4 @@
-name: dotnet format
+name: unit tests
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
       - '**/*.cs'
 
 jobs:
-  check-format:
+  run-unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +20,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dotnet-format tool
-        run: dotnet tool install -g dotnet-format
-        working-directory: ./server
-
-      - name: Run dotnet format
-        run: dotnet format server.csproj --verify-no-changes
+      - name: Run tests
+        run: dotnet test
         working-directory: ./server
 

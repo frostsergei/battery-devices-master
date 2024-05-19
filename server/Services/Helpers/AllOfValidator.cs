@@ -10,16 +10,24 @@ public static partial class Parameter
 
     public class AllOfValidator : TypeBasedValidator<List<string>>
     {
-        public AllOfValidator() : base(AllOfKey, KeyType.Additional)
+        public AllOfValidator() : base(AllOfKey, KeyType.Exceptional)
         {
         }
 
         protected override void ValidateImpl(ParameterObject parameter, ParameterObjectDict parameters)
         {
+            var hasAllOfKey = parameter.ContainsKey(AllOfKey);
+
             var type = Parameter.GetType(parameter);
             switch (type)
             {
                 case Type.Composite:
+                    if (!hasAllOfKey)
+                    {
+                        throw new ParameterSchemaParsingException(
+                            $"Type 'complex' must always have 'allOf'", ParameterSchemaLevel.Parameter);
+                    }
+
                     break;
                 case Type.String:
                 case Type.Integer:
@@ -28,8 +36,13 @@ public static partial class Parameter
                 case Type.Time:
                 case Type.Selector:
                 case Type.Array:
-                    throw new ParameterSchemaParsingException(
-                        $"Type '{type.ToString()}' must not have 'allOf'", ParameterSchemaLevel.Parameter);
+                    if (hasAllOfKey)
+                    {
+                        throw new ParameterSchemaParsingException(
+                            $"Type '{type.ToString()}' must not have 'allOf'", ParameterSchemaLevel.Parameter);
+                    }
+
+                    return;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown type {type.ToString()}");
             }
@@ -40,9 +53,15 @@ public static partial class Parameter
         }
 
         private static void ValidateAtomicParameters(
-            List<string> atomicParameters,
+            List<string>? atomicParameters,
             ReadonlyParameterObjectDict parameters)
         {
+            if (atomicParameters == null || atomicParameters.Count == 0)
+            {
+                throw new ParameterSchemaParsingException(
+                    "'allOf' list is null or empty", ParameterSchemaLevel.Parameter);
+            }
+
             foreach (var name in atomicParameters)
             {
                 if (!parameters.TryGetValue(name, out var parameter))

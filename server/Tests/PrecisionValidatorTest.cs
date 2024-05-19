@@ -79,7 +79,7 @@ public class PrecisionValidatorTest
 
     [Theory]
     [MemberData(nameof(IncorrectPrecisionData))]
-    public void Validate_IncorrectRegexData(ParameterObject parameter)
+    public void Validate_IncorrectPrecision(ParameterObject parameter)
     {
         Parameter.Validator validator = new Parameter.PrecisionValidator();
         Assert.Throws<ParameterSchemaParsingException>(() => validator.Validate(parameter, new ParameterObjectDict()));

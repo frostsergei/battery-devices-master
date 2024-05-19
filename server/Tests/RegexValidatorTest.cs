@@ -66,7 +66,7 @@ public class RegexValidatorTest
 
     [Theory]
     [MemberData(nameof(IncorrectRegexData))]
-    public void Validate_IncorrectRegexData(ParameterObject parameter)
+    public void Validate_IncorrectRegex(ParameterObject parameter)
     {
         Parameter.Validator validator = new Parameter.RegexValidator();
         Assert.Throws<ParameterSchemaParsingException>(() => validator.Validate(parameter, new ParameterObjectDict()));

@@ -1,4 +1,4 @@
-name: dotnet format
+name: unit tests
 
 on:
   pull_request:
@@ -19,10 +19,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Restore dotnet context
-        run: dotnet restore
-        working-directory: ./server
 
       - name: Run tests
         run: dotnet test

@@ -1,6 +1,5 @@
 using BatteryDevicesMaster.Server.Services;
 using BatteryDevicesMaster.Server.Services.Helpers;
-using Xunit;
 
 namespace BatteryDevicesMaster.Server.Tests;
 

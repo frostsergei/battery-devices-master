@@ -13,19 +13,32 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-      <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
-      <PackageReference Include="xunit" Version="2.8.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
+        <PackageReference Include="NSwag.AspNetCore" Version="14.0.7"/>
+        <PackageReference Include="xunit" Version="2.8.0"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.1.2">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="docs\schemas\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="docs\schemas\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="TestsU\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TestsU\obj\TestsU.csproj.nuget.dgspec.json" />
+    </ItemGroup>
 
 </Project>

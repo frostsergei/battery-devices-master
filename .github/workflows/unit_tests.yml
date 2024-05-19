@@ -8,7 +8,7 @@ on:
       - '**/*.cs'
 
 jobs:
-  check-format:
+  run-unit-tests:
     runs-on: ubuntu-latest
 
     steps:

@@ -46,7 +46,7 @@ public class AllOfValidatorTest
                 GetParameter("allOf-parent", "composite", new List<string> { "child-1", "child-2", "child-3" }),
                 new ParameterObjectDict
                 {
-                    { "child", GetParameter("child", "integer") },
+                    { "child-1", GetParameter("child-1", "integer") },
                     { "child-2", GetParameter("child-2", "string") },
                     { "child-3", GetParameter("child-3", "selector") },
                 }

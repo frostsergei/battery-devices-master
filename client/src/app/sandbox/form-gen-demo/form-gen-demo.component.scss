@@ -1,3 +1,6 @@
-::ng-deep .mat-mdc-tab-header .mat-mdc-tab{
-  background: white;
+::ng-deep .mat-mdc-tab.mdc-tab--active:hover .mdc-tab__text-label{
+  color: white !important;
+}
+::ng-deep .mat-mdc-tab .mdc-tab__text-label{
+  color: rgba(255, 255, 255, 0.5) !important;
 }

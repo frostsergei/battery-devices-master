@@ -148,7 +148,7 @@ public class SchemaController : ControllerBase
                                    throw new InvalidOperationException("SchemasDirectory is null");
             var parameterFilename = _configuration.GetValue<string>("YamlParametersFileName") ??
                                     throw new InvalidOperationException("YamlParametersFileName is null");
-            var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory,customDirectory, parameterFilename));
+            var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory, customDirectory, parameterFilename));
             return new FileStreamResult(fileStream, "application/octet-stream");
         }
         catch (FileNotFoundException ex)
@@ -195,11 +195,11 @@ public class SchemaController : ControllerBase
         }
     }
 
-     /// <summary>
+    /// <summary>
     /// Get form file
     /// </summary>
     /// <response code="200">Request message</response>
-    /// <response code="400">Bad request</response>
+    /// <response code="404">Not Found</response>
     /// <response code="500">Internal server error</response>
     [HttpGet("form")]
     [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]

@@ -58,31 +58,31 @@ export class YamlEditorComponent implements AfterViewInit {
   }
 
   private getParameters(): void {
-    this.schemaClient.getParameters().subscribe(
-      async (fileResponse: FileResponse) => {
+    this.schemaClient.getParameters().subscribe({
+      next: async (fileResponse: FileResponse) => {
         this.text = await fileResponse.data.text();
         if (this.editor) {
           this.editor.setValue(this.text, -1);
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         console.error('Error loading initial content', error);
       },
-    );
+    });
   }
 
   private getForm(): void {
-    this.schemaClient.getForm().subscribe(
-      async (fileResponse: FileResponse) => {
+    this.schemaClient.getForm().subscribe({
+      next: async (fileResponse: FileResponse) => {
         this.text = await fileResponse.data.text();
         if (this.editor) {
           this.editor.setValue(this.text, -1);
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         console.error('Error loading initial content', error);
       },
-    );
+    });
   }
 
   private initEditor(): void {

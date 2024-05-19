@@ -40,9 +40,15 @@ public static partial class Parameter
         }
 
         private static void ValidateAtomicParameters(
-            List<string> atomicParameters,
+            List<string>? atomicParameters,
             ReadonlyParameterObjectDict parameters)
         {
+            if (atomicParameters == null || atomicParameters.Count == 0)
+            {
+                throw new ParameterSchemaParsingException(
+                    $"'allOf' list is null or empty", ParameterSchemaLevel.Parameter);
+            }
+
             foreach (var name in atomicParameters)
             {
                 if (!parameters.TryGetValue(name, out var parameter))

@@ -3,10 +3,10 @@
 </div>
 <div class="container p-3 col-6 rounded-2 border border-white">
     <form (submit)="onSubmit()" [formGroup]="testForm" *ngIf="!schemaFileEmpty">
-        <mat-tab-group>
+        <mat-tab-group >
             <mat-tab *ngFor="let tab of tabs" [label]="tab.name" >
                 <ng-container *ngFor="let controlName of getControlsByTab(tab.name)">
-                    <div class="row">
+                    <div class="row mt-3">
                         <app-input
                                 [control]="$any(testForm).get(controlName)"
                                 [label]="$any(testForm).get(controlName)?.name"

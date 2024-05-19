@@ -213,8 +213,8 @@ public class SchemaController : ControllerBase
                                     throw new InvalidOperationException("SchemasDirectory is null");
             var customDirectory = _configuration.GetValue<string>("CustomSchemaDirectory") ??
                                     throw new InvalidOperationException("SchemasDirectory is null");
-            var formFilename = _configuration.GetValue<string>("YamlformFileName") ??
-                                    throw new InvalidOperationException("YamlformFileName is null");
+            var formFilename = _configuration.GetValue<string>("YamlFormFileName") ??
+                                    throw new InvalidOperationException("YamlFormFileName is null");
             var fileStream = System.IO.File.OpenRead(Path.Combine(schemasDirectory, customDirectory, formFilename));
             return new FileStreamResult(fileStream, "application/octet-stream");
         }

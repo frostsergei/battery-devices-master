@@ -164,7 +164,7 @@ export class FormGenDemoComponent {
       content: jsonData,
     } as Database).subscribe({
       next: (response: any) => {
-        downloadFile(response.data, 'test.txt');
+        downloadFile(response.data, 'data.xml');
       },
       error: (error: any) => {
         console.error(error);
